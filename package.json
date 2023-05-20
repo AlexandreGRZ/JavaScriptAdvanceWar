@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "phaser": "^3.60.0",
+    "phaser-tilemap-plus": "^0.10.2"
+  }
+}
