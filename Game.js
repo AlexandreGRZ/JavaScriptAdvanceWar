@@ -106,32 +106,92 @@ var neutraltown1;
 var redtown1;
 
 var cursorPositionTab = [];
+
+
+//Sprite Unity ***************************************************************************************************************
 var TabSprite = [];
 
+//**************************************************************************************************************************** */
+
+
+//Infentry Unity ***************************************************************************************************************
 var maininfentery = new MainInfentery(1, 100, 20, 5, 10, 5,"Red" ,0.5, 0, 0);
 var BlueMainInfentery1 = new MainInfentery(2, 100, 20, 5, 10, 5,"Blue",0.5, 5, 0);
 
-cursorPositionTab = InitialisationTab(cursorPositionTab);
 
-var armyPositionTab = [];
+
 var InfenteryTab = [];
-armyPositionTab = InitialisationTab(armyPositionTab);
 
 InfenteryTab.push(maininfentery);
 InfenteryTab.push(BlueMainInfentery1);
-InitInfenteryTab(InfenteryTab, armyPositionTab);
-console.log(armyPositionTab);
-var TownTab = [];
-TownTab = InitialisationTab(TownTab);
 
-var Town1 = new Base(1, "Neutral", 20 , 10, 1, 8);
+//**************************************************************************************************************************** */
+
+//Town Unity ***************************************************************************************************************
 
 var TownTabLocalisation = [];
-TownTabLocalisation.push(Town1);
+TownTabLocalisation = InitialisationTab(TownTabLocalisation);
+
+var RedTownVec = [];
+var NeutralTownVec = [];
+var BlueTownVec = [];
+
+
+var NeutralTown1 = new Base(1, "Neutral", 20 , 10, 1, 8);
+var RedBase = new Base(2, "Red", 20, 10, 1, 5);
+var BlueBase = new Base(3, "Blue", 20, 10, 17, 4);
+var BlueTown1 = new Base(4, "Blue", 20, 10, 18, 5);
+
+RedTownVec.push(RedBase);
+
+NeutralTownVec.push(NeutralTown1);
+
+BlueTownVec.push(BlueBase);
+BlueTownVec.push(BlueTown1);
+
+
+
+for (let element of RedTownVec) {
+    TownTabLocalisation[element.yposition][element.xposition] = element.id;
+} 
+
+for (let element of NeutralTownVec) {
+  TownTabLocalisation[element.yposition][element.xposition] = element.id;
+} 
+
+for (let element of BlueTownVec) {
+  TownTabLocalisation[element.yposition][element.xposition] = element.id;
+} 
+
+console.table(TownTabLocalisation);
+
+
+
+
+//**************************************************************************************************************************** */
+
+
+//Town Unity ***************************************************************************************************************
+var SpriteRedTown = [];
+
+var SpriteNeutralTown = [];
+
+var SpriteBlueTown = [];
+
+
+//**************************************************************************************************************************** */
+cursorPositionTab = InitialisationTab(cursorPositionTab);
+
+var armyPositionTab = [];
+
+armyPositionTab = InitialisationTab(armyPositionTab);
+InitInfenteryTab(InfenteryTab, armyPositionTab);
+console.log(armyPositionTab);
+
 
 cursorPositionTab[0][0] = 1;
 
-
+var scene;
 
 
 function preload() {
@@ -177,25 +237,49 @@ function preload() {
 
 
 function create() {
+
+  scene = this;
+
+
   var map = this.make.tilemap({ key: "carte" });
   var tiles = map.addTilesetImage("MainAssetForMap", "tiles");
 
   var layer = map.createLayer("Map", tiles);
 
   var cursor = this.add.image(16, 16, "cursor");
+  cursor.setDepth(3);
 
+ 
+
+
+  //RED TOWN######################################
   var RedBaseImage = this.add.image(24, 80, "RedBase");
+  var SpriteAddTab = new Sprite(RedBase.id, "Red", RedBaseImage);
 
+
+  SpriteRedTown.push(SpriteAddTab);
+
+
+  //Neutral TOWN######################################
   var neutralTown1 = this.add.image(24, 135, "NeutralTown");
-  neutraltown1 = neutralTown1;
-  var RedTown1 = this.add.image(24,135, "RedTown");
-  redtown1 = RedTown1;
-  RedTown1.setVisible(false);
-  TownTab[((136+8) / 16) - 1][((24+8) / 16) - 1] = Town1.id;
-
+  
+  var SpriteAddTab = new Sprite(NeutralTown1.id, "Neutral", neutralTown1);
+  SpriteNeutralTown.push(SpriteAddTab);
+  
   //BLUE TOWN######################################
-  var BlueBase1 = this.add.image(280, 64 , "BlueBase");
-  var blueTown1 = this.add.image(296, 87, "BlueTown");
+  var BlueBase1 = this.add.image(BlueBase.xposition * 16 + 8, BlueBase.yposition * 16, "BlueBase");
+  var blueTown1 = this.add.image(BlueTown1.xposition * 16 + 8, BlueTown1.yposition * 16 + 7, "BlueTown");
+
+ 
+  var SpriteAddTab = new Sprite(BlueBase.id, "Blue", BlueBase1);
+  SpriteBlueTown.push(SpriteAddTab);
+  var SpriteAddTab = new Sprite(BlueTown1.id, "Blue", blueTown1);
+   SpriteBlueTown.push(SpriteAddTab);
+
+  
+
+
+  
 
   var InfoBulle = this.add.text(50, 50, {font : '16px Arial', fill: "#ffffff"});
   InfoBulle.setVisible(false);
@@ -231,16 +315,25 @@ function create() {
     repeat: -1
   });
 
+  // Push Des Sprite Dans le Tab***************************************************************************************************
   var sprite = this.add.sprite(8, 8, 'RedMainInfentery');
+  sprite.setDepth(2);
   var SpriteAddTab = new Sprite(maininfentery.type, "Red", sprite);
   TabSprite.push(SpriteAddTab);
-  sprite.anims.play('RedMainInfenteryAnim');
 
   var BlueSprite = this.add.sprite(88, 8, 'BlueMainInfentery');
+  BlueSprite.setDepth(2);
   var SpriteAddTab = new Sprite(BlueMainInfentery1.type, "Blue", BlueSprite);
   TabSprite.push(SpriteAddTab);
+
+  //**************************************************************************************************************************** */
+
+  // Play Anim***************************************************************************************************
+  sprite.anims.play('RedMainInfenteryAnim');
   BlueSprite.anims.play('BlueMainInfenteryAnim');
 
+
+  //**************************************************************************************************************************** */
 
   this.input.keyboard.on("keydown", function (event) {
     if (event.key === "ArrowUp") {
@@ -312,17 +405,37 @@ function create() {
     {
       if(ArmySelected != null)
       {
-          unityCapture(TownTab[ycursorposition][xcursorposition]);
+          unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
       }
     }else if(event.key === "t")
     {
         ChangeTurn();
     }else if(event.key === "a")
     {
+      
+      
+      
       var defenceArmy = getUnity(armyPositionTab[ycursorposition][xcursorposition])
-      if(armyPositionTab[ycursorposition][xcursorposition] != 0)
+     
+      if(defenceArmy != false)
+      {   
+        var check = VerifyTheProximityOfUnity(ArmySelected, defenceArmy);
+        console.log(check);
+          if(check)
+          {
+              if(armyPositionTab[ycursorposition][xcursorposition] != 0)
+              {
+                  UnityAttack(ArmySelected, defenceArmy);
+              }
+          }
+          else
+          {
+            console.log("Trop loin");
+          }
+      }
+      else
       {
-          UnityAttack(ArmySelected, defenceArmy);
+        console.log("Case Vide");
       }
     }
   });
@@ -393,6 +506,8 @@ function getUnity(type)
       return element;
     }
   }
+  return false;
+
 }
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -500,7 +615,7 @@ async function deplacementInfentery(unitSelected, sprite)
       }
       else
       {
-        console.log("coucou");
+
       }
       
     
@@ -508,26 +623,112 @@ async function deplacementInfentery(unitSelected, sprite)
 
 function unityCapture(idTown)
 {   
-  console.log("coucou");
-    var TownCaptured = getTownCaptured(idTown);
+  
 
-    captureEnd = TownCaptured.capture(ArmySelected.captureCapacity);
 
-    if(captureEnd)
-    {   
-        console.log("Captured");
-        redtown1.setVisible(true);
-        neutraltown1.setVisible(false);
+    if(timeTurn == 0)
+    {
+        var TownCaptured = getTownCapturedForRed(idTown);
+
+        captureEnd = TownCaptured.capture(ArmySelected.captureCapacity);
+    
+        if(captureEnd)
+        {   
+            console.log("Captured");
+            
+            if(idTown == 3)
+            {
+                var SpriteSearch = SearchSpriteBlueTown(idTown);
+                Sprite.sprite.setVisible(false);
+            }
+            else
+            {
+
+            }
+
+
+        }
+        else
+        {
+          console.log("capture");
+        }
     }
     else
     {
-      console.log("capture");
+        var TownCaptured = getTownCapturedForBlue(idTown);
+
+        captureEnd = TownCaptured.capture(ArmySelected.captureCapacity);
+    
+        if(captureEnd)
+        {   
+            console.log("Captured");
+            if(idTown == 2)
+            {
+              var SpriteSearch = SearchSpriteRedTown(idTown);
+              SpriteSearch.sprite.setVisible(false);
+              
+              var BlueBaseSprite2 = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16, "BlueBase");
+              
+              BlueBaseSprite2.setDepth(0);
+              
+              var BlueBase2 = new Base(TownCaptured.id, "Blue", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
+
+              var SpriteAddTab = new Sprite(TownCaptured.id, "Blue", BlueBase2);
+              
+              console.log(RedTownVec.indexOf(TownCaptured));
+             
+              SpriteRedTown.splice(RedTownVec.indexOf(TownCaptured), 1);
+              
+              SpriteBlueTown.push(SpriteAddTab);
+
+              RedTownVec.splice(RedTownVec.indexOf(TownCaptured), 1);
+
+              BlueTownVec.push(BlueBase2);
+            }
+            else
+            {
+              
+            }
+        }
+        else
+        {
+          console.log("capture");
+        }
     }
+
+
+   
 }
 
-function getTownCaptured(id)
+function getTownCapturedForRed(id)
 { 
-  for (let element of TownTabLocalisation) {
+
+  for (let element of NeutralTownVec) {
+    if (element.id === id) {
+      console.log(element);
+      return element;
+    }
+  }
+
+  for (let element of BlueTownVec) {
+    if (element.id === id) {
+      console.log(element);
+      return element;
+    }
+  }
+}
+
+function getTownCapturedForBlue(id)
+{ 
+
+  for (let element of NeutralTownVec) {
+    if (element.id === id) {
+      console.log(element);
+      return element;
+    }
+  }
+
+  for (let element of RedTownVec) {
     if (element.id === id) {
       console.log(element);
       return element;
@@ -572,7 +773,74 @@ function UnityAttack(AttackUnity, defenceUnity)
     var degat = (puissanceDesAttaquant * 0.5 - defenceUnity.defence * 0.2) + 10;
     defenceUnity.hp -= degat;
 
-    var puissanceDesDefenseur = defenceUnity.attack + (defenceUnity.multiplicateur * defenceUnity.hp);
-    var degat = (puissanceDesDefenseur * 0.3 - AttackUnity.defence * 0.1) + 10;
-    AttackUnity.hp -= degat;
+    defenceUnity.hp = Math.floor(defenceUnity.hp);
+
+    if(!VerifyHpOfUnity(defenceUnity))
+    {
+      var puissanceDesDefenseur = defenceUnity.attack + (defenceUnity.multiplicateur * defenceUnity.hp);
+      var degat = (puissanceDesDefenseur * 0.3 - AttackUnity.defence * 0.1) + 10;
+      AttackUnity.hp -= degat;
+  
+      AttackUnity.hp = Math.floor(AttackUnity.hp);
+  
+      VerifyHpOfUnity(AttackUnity);
+    }
+
+}
+
+function VerifyHpOfUnity(UnityToCheck)
+{
+    if(UnityToCheck.hp <= 10)
+    {
+      var sprite = getSprite(UnityToCheck);
+      sprite.destroy();
+
+      armyPositionTab[UnityToCheck.yposition][UnityToCheck.xposition] = 0;
+
+      console.table(armyPositionTab);
+
+      InfenteryTab.splice((UnityToCheck.type - 1), 1);
+      console.log(InfenteryTab);
+
+      return true;
+
+    }
+    else
+      return false;
+}
+
+function VerifyTheProximityOfUnity(AttackUnity, DefenceUnity)
+{
+    if(AttackUnity.xposition != (DefenceUnity.xposition - 1) && AttackUnity.xposition != (DefenceUnity.xposition + 1))
+    { 
+      
+        if(AttackUnity.yposition != (DefenceUnity.yposition -1) && AttackUnity.yposition != (DefenceUnity.yposition + 1))
+          return false;
+        else return true;
+    }
+    else return true;
+}
+
+function SearchSpriteRedTown(idTown)
+{
+  for (let element of SpriteRedTown ) {
+      if(element.id == idTown)
+        return element;
+  }
+}
+
+function SearchSpriteNeutralTown(idTown)
+{
+  for (let element of SpriteNeutralTown ) {
+      if(element.id == idTown)
+        return element;
+  }
+}
+
+function SearchSpriteBlueTown(idTown)
+{
+  for (let element of SpriteBlueTown ) {
+      if(element.id == idTown)
+        return element;
+  }
 }
