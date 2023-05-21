@@ -193,6 +193,7 @@ cursorPositionTab[0][0] = 1;
 
 var scene;
 
+var Mouving = false;
 
 function preload() {
   this.load.image("tiles", "src/asset/TILESET.jpg");
@@ -336,109 +337,114 @@ function create() {
   //**************************************************************************************************************************** */
 
   this.input.keyboard.on("keydown", function (event) {
-    if (event.key === "ArrowUp") {
-      // Déplacer l'image vers le haut
-      if(ycursorposition != 0)
-      { 
-          cursorPositionTab[ycursorposition][xcursorposition] = 0;
-          cursor.y -= 16;
-          ycursorposition -= 1;
-          cursorPositionTab[ycursorposition][xcursorposition] = 1;
-        
-      }
-    } else if (event.key === "ArrowDown") {
-      // Déplacer l'image vers le bas
-
-      if(ycursorposition != 9)
-      {   
-          cursorPositionTab[ycursorposition][xcursorposition] = 0;
-          cursor.y += 16;
-          ycursorposition += 1;
-          cursorPositionTab[ycursorposition][xcursorposition] = 1;
-      }
-    } else if (event.key === "ArrowLeft") {
-      // Déplacer l'image vers la gauche
-      
-      if(xcursorposition != 0)
-      { 
-          cursorPositionTab[ycursorposition][xcursorposition] = 0;
-          cursor.x -= 16;
-          xcursorposition -= 1;
-          cursorPositionTab[ycursorposition][xcursorposition] = 1;
+    
+    if(!Mouving)
+    {
+        if (event.key === "ArrowUp") {
+          // Déplacer l'image vers le haut
+          if(ycursorposition != 0)
+          { 
+              cursorPositionTab[ycursorposition][xcursorposition] = 0;
+              cursor.y -= 16;
+              ycursorposition -= 1;
+              cursorPositionTab[ycursorposition][xcursorposition] = 1;
+            
+          }
+        } else if (event.key === "ArrowDown") {
+          // Déplacer l'image vers le bas
+    
+          if(ycursorposition != 9)
+          {   
+              cursorPositionTab[ycursorposition][xcursorposition] = 0;
+              cursor.y += 16;
+              ycursorposition += 1;
+              cursorPositionTab[ycursorposition][xcursorposition] = 1;
+          }
+        } else if (event.key === "ArrowLeft") {
+          // Déplacer l'image vers la gauche
           
-      }
-    } else if (event.key === "ArrowRight") {
-      // Déplacer l'image vers la droite
-      if(xcursorposition != 19)
-      {   
-          cursorPositionTab[ycursorposition][xcursorposition] = 0;
-          cursor.x += 16;
-          xcursorposition += 1;
-          cursorPositionTab[ycursorposition][xcursorposition] = 1;
-          
-      }
-    }else if(event.key === "b")
-    {
-      if(armyPositionTab[ycursorposition][xcursorposition] != 0)
-      {
-          ArmySelected = getArmySelected(armyPositionTab[ycursorposition][xcursorposition]);
-          console.log(ArmySelected);
-      }
-    }else if(event.key === "n")
-    {
-      if(ArmySelected != null)
-      {
-        deplacementInfentery(ArmySelected, getSprite(ArmySelected));
-      }
-    }else if(event.key === "v")
-    {
-      if(ArmySelected != null)
-      {
-        InfoBulle.setText('health : ' + ArmySelected.hp + 
-        "\nAttack :  " + ArmySelected.attack +
-        "\nDefence : " + ArmySelected.defence +
-        "\nMouvement : " + ArmySelected.mouvement);
-        InfoBulle.setPosition((8 + (ArmySelected.xposition) * 16) + 16, 8 + (ArmySelected.yposition - 1) * 16)
-        InfoBulle.setVisible(true);
-      }
-    }else if(event.key === "c")
-    {
-      if(ArmySelected != null)
-      {
-          unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
-      }
-    }else if(event.key === "t")
-    {
-        ChangeTurn();
-    }else if(event.key === "a")
-    {
-      
-      
-      
-      var defenceArmy = getUnity(armyPositionTab[ycursorposition][xcursorposition])
-     
-      if(defenceArmy != false)
-      {   
-        var check = VerifyTheProximityOfUnity(ArmySelected, defenceArmy);
-        console.log(check);
-          if(check)
+          if(xcursorposition != 0)
+          { 
+              cursorPositionTab[ycursorposition][xcursorposition] = 0;
+              cursor.x -= 16;
+              xcursorposition -= 1;
+              cursorPositionTab[ycursorposition][xcursorposition] = 1;
+              
+          }
+        } else if (event.key === "ArrowRight") {
+          // Déplacer l'image vers la droite
+          if(xcursorposition != 19)
+          {   
+              cursorPositionTab[ycursorposition][xcursorposition] = 0;
+              cursor.x += 16;
+              xcursorposition += 1;
+              cursorPositionTab[ycursorposition][xcursorposition] = 1;
+              
+          }
+        }else if(event.key === "b")
+        {
+          if(armyPositionTab[ycursorposition][xcursorposition] != 0)
           {
-              if(armyPositionTab[ycursorposition][xcursorposition] != 0)
+              ArmySelected = getArmySelected(armyPositionTab[ycursorposition][xcursorposition]);
+              console.log(ArmySelected);
+          }
+        }else if(event.key === "n")
+        {
+          if(ArmySelected != null)
+          {
+            deplacementInfentery(ArmySelected, getSprite(ArmySelected));
+          }
+        }else if(event.key === "v")
+        {
+          if(ArmySelected != null)
+          {
+            InfoBulle.setText('health : ' + ArmySelected.hp + 
+            "\nAttack :  " + ArmySelected.attack +
+            "\nDefence : " + ArmySelected.defence +
+            "\nMouvement : " + ArmySelected.mouvement);
+            InfoBulle.setPosition((8 + (ArmySelected.xposition) * 16) + 16, 8 + (ArmySelected.yposition - 1) * 16)
+            InfoBulle.setVisible(true);
+          }
+        }else if(event.key === "c")
+        {
+          if(ArmySelected != null)
+          {
+              unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
+          }
+        }else if(event.key === "t")
+        {
+            ChangeTurn();
+        }else if(event.key === "a")
+        {
+          
+          
+          
+          var defenceArmy = getUnity(armyPositionTab[ycursorposition][xcursorposition])
+        
+          if(defenceArmy != false)
+          {   
+            var check = VerifyTheProximityOfUnity(ArmySelected, defenceArmy);
+            console.log(check);
+              if(check)
               {
-                  UnityAttack(ArmySelected, defenceArmy);
+                  if(armyPositionTab[ycursorposition][xcursorposition] != 0)
+                  {
+                      UnityAttack(ArmySelected, defenceArmy);
+                  }
+              }
+              else
+              {
+                console.log("Trop loin");
               }
           }
           else
           {
-            console.log("Trop loin");
+            console.log("Case Vide");
           }
+        }
+      
       }
-      else
-      {
-        console.log("Case Vide");
-      }
-    }
-  });
+    });
 
 
   this.input.keyboard.on('keyup', function(event) {
@@ -514,7 +520,8 @@ function sleep(ms) {
 }
 
 async function deplacementInfentery(unitSelected, sprite)
-{
+{   
+    Mouving = true;
     var oldXposition = unitSelected.xposition + 1;
     var oldYposition = unitSelected.yposition + 1;
 
@@ -617,6 +624,8 @@ async function deplacementInfentery(unitSelected, sprite)
       {
 
       }
+
+      Mouving = false;
       
     
 }
