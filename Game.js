@@ -2,16 +2,19 @@ class MainInfentery{
 
   
 
-  constructor(type, hp, attack, defence, captureCapacity,mouvement , team, multiplicateur, xposition, yposition)
+  constructor(id, type, hp, attack, defence, captureCapacity,mouvement , team, multiplicateur,mutiplicateurAgainstArmor , MultiplicatorAgainstInfetry ,xposition, yposition)
   {   
       this.deplacement = 5;
       this.multiplicateur = multiplicateur
+      this.id = id;
       this.type = type;
       this.hp = hp;
       this.attack = attack;
       this.defence = defence;
       this.captureCapacity = captureCapacity;
       this.mouvement = mouvement;
+      this.mutiplicateurAgainstArmor = mutiplicateurAgainstArmor;
+      this.MultiplicatorAgainstInfetry = MultiplicatorAgainstInfetry;
       this.xposition = xposition;
       this.yposition = yposition;
       this.team = team;
@@ -38,6 +41,22 @@ class MainInfentery{
   reloadDeplacement()
   {
     this.mouvement = this.deplacement;
+  }
+
+  isBlinde()
+  {
+    if(this.type !== "MainInfetry" && this.type !== "Bazouka")
+      return true;
+    else
+      return false;
+  }
+
+  isInfentry()
+  {
+    if(this.type === "MainInfetry")
+      return true;
+    else
+      return false;
   }
 
   greet()
@@ -82,13 +101,11 @@ class Sprite{
 var config = {
   type: Phaser.AUTO,
   width: 960,
-  height: 480,
-  scene: {
-    preload: preload,
-    create: create,
-    update: update,
-  },
+  height: 510,
 };
+
+
+
 
 //si TimeTurn == 0 Alors équipe des rouges joue, si c'est 1 c'est au tour des bleus
 
@@ -104,6 +121,8 @@ var Zoom = 3;
 var game = new Phaser.Game(config);
 var neutraltown1;
 var redtown1;
+var InfobulleAttack;
+var Winner = "Red";
 
 var cursorPositionTab = [];
 
@@ -115,53 +134,38 @@ var TabSprite = [];
 
 
 //Infentry Unity ***************************************************************************************************************
-var maininfentery = new MainInfentery(1, 100, 20, 5, 10, 5,"Red" ,0.5, 0, 0);
-var BlueMainInfentery1 = new MainInfentery(2, 100, 20, 5, 10, 5,"Blue",0.5, 5, 0);
+var maininfentery
+var BlueMainInfentery1
 
+var RedLightTank 
+var BlueLightTank
+
+var RedBazouka
+var BlueBazouka 
 
 
 var InfenteryTab = [];
 
-InfenteryTab.push(maininfentery);
-InfenteryTab.push(BlueMainInfentery1);
+
 
 //**************************************************************************************************************************** */
 
 //Town Unity ***************************************************************************************************************
 
 var TownTabLocalisation = [];
-TownTabLocalisation = InitialisationTab(TownTabLocalisation);
+TownTabLocalisation 
 
 var RedTownVec = [];
 var NeutralTownVec = [];
 var BlueTownVec = [];
 
 
-var NeutralTown1 = new Base(1, "Neutral", 20 , 10, 1, 8);
-var RedBase = new Base(2, "Red", 20, 10, 1, 5);
-var BlueBase = new Base(3, "Blue", 20, 10, 17, 4);
-var BlueTown1 = new Base(4, "Blue", 20, 10, 18, 5);
-
-RedTownVec.push(RedBase);
-
-NeutralTownVec.push(NeutralTown1);
-
-BlueTownVec.push(BlueBase);
-BlueTownVec.push(BlueTown1);
+var NeutralTown1
+var RedBase 
+var BlueBase
+var BlueTown1
 
 
-
-for (let element of RedTownVec) {
-    TownTabLocalisation[element.yposition][element.xposition] = element.id;
-} 
-
-for (let element of NeutralTownVec) {
-  TownTabLocalisation[element.yposition][element.xposition] = element.id;
-} 
-
-for (let element of BlueTownVec) {
-  TownTabLocalisation[element.yposition][element.xposition] = element.id;
-} 
 
 console.table(TownTabLocalisation);
 
@@ -180,284 +184,582 @@ var SpriteBlueTown = [];
 
 
 //**************************************************************************************************************************** */
-cursorPositionTab = InitialisationTab(cursorPositionTab);
+cursorPositionTab
 
 var armyPositionTab = [];
 
-armyPositionTab = InitialisationTab(armyPositionTab);
-InitInfenteryTab(InfenteryTab, armyPositionTab);
-console.log(armyPositionTab);
-
-
-cursorPositionTab[0][0] = 1;
+armyPositionTab
 
 var scene;
 
 var Mouving = false;
 
-function preload() {
-  this.load.image("tiles", "src/asset/TILESET.jpg");
+function InitialisationGame()
+{
+  TabSprite = [];
+  maininfentery = new MainInfentery(1,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 0, 0);
+  BlueMainInfentery1 = new MainInfentery(2,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 5, 0);
 
-  this.load.tilemapTiledJSON("carte", "src/asset/1stMap.json");
+  RedLightTank = new MainInfentery(3,"TankInfentry", 100, 35, 40, 0, 6,"Red",0.5, 1, 1.2, 6, 3);
+  BlueLightTank = new MainInfentery(4,"TankInfentry", 100, 35, 40, 0, 6,"Blue",0.5, 1, 1.2, 7, 6);
 
-  this.load.image("RedBase", "src/asset/RedBase.png");
+  RedBazouka = new MainInfentery(5,"Bazouka", 100, 30, 10, 0, 6,"Red",0.5, 1, 1, 2, 3);
+  BlueBazouka = new MainInfentery(6,"Bazouka", 100, 30, 10, 0, 6,"Blue",0.5, 1, 1, 3, 7);
 
-  this.load.image("cursor", "src/asset/cursor.png");
+  InfenteryTab = [];
+
+  InfenteryTab.push(maininfentery);
+  InfenteryTab.push(BlueMainInfentery1);
+  InfenteryTab.push(RedLightTank);
+  InfenteryTab.push(BlueLightTank);
+  InfenteryTab.push(RedBazouka);
+  InfenteryTab.push(BlueBazouka);
+
+
+
+  TownTabLocalisation = [];
+  TownTabLocalisation = InitialisationTab(TownTabLocalisation);
   
-  this.load.image("NeutralTown", 'src/asset/neutralTown.png');
+  RedTownVec = [];
+  NeutralTownVec = [];
+  BlueTownVec = [];
+  
+  
+  NeutralTown1 = new Base(1, "Neutral", 20 , 10, 1, 8);
+  RedBase = new Base(2, "Red", 20, 10, 1, 5);
+  BlueBase = new Base(3, "Blue", 20, 10, 17, 4);
+  BlueTown1 = new Base(4, "Blue", 20, 10, 18, 5);
+  
+  RedTownVec.push(RedBase);
+  
+  NeutralTownVec.push(NeutralTown1);
+  
+  BlueTownVec.push(BlueBase);
+  BlueTownVec.push(BlueTown1);
+  
 
-  this.load.image("RedTown", "src/asset/RedTown.png");
+  for (let element of RedTownVec) {
+    TownTabLocalisation[element.yposition][element.xposition] = element.id;
+  } 
 
-  this.load.image("BlueTown", "src/asset/blueTown.png");
+  for (let element of NeutralTownVec) {
+    TownTabLocalisation[element.yposition][element.xposition] = element.id;
+  } 
 
-  this.load.image("BlueBase", "src/asset/BlueBase.png");
+  for (let element of BlueTownVec) {
+    TownTabLocalisation[element.yposition][element.xposition] = element.id;
+  } 
 
-  this.load.spritesheet("RedMainInfentery", "src/asset/MainInfenteryStyleSheet.png", {
-    frameWidth: 16,
-    frameHeight: 16,
-    spacing: 1,
-  });
 
-  this.load.spritesheet("BlueMainInfentery", "src/asset/BlueMainInfentery.png", {
-    frameWidth: 16,
-    frameHeight: 16,
-    spacing: 1,
-  });
+  SpriteRedTown = [];
+
+  SpriteNeutralTown = [];
+
+  SpriteBlueTown = [];
+
+
+
+  cursorPositionTab = InitialisationTab(cursorPositionTab);
+
+  armyPositionTab = [];
+
+  armyPositionTab = InitialisationTab(armyPositionTab);
+  InitInfenteryTab(InfenteryTab, armyPositionTab);
+  console.log(armyPositionTab);
+
+
+  cursorPositionTab[0][0] = 1;
+
+  scene;
+
+  Mouving = false;
+
+
 }
 
 
 
 
+class Menu extends Phaser.Scene{
 
+  constructor() {
+    super({ key: "Menu"});
+  }
 
-
-
-
-
-
-
-
-function create() {
-
-  scene = this;
-
-
-  var map = this.make.tilemap({ key: "carte" });
-  var tiles = map.addTilesetImage("MainAssetForMap", "tiles");
-
-  var layer = map.createLayer("Map", tiles);
-
-  var cursor = this.add.image(16, 16, "cursor");
-  cursor.setDepth(3);
-
- 
-
-
-  //RED TOWN######################################
-  var RedBaseImage = this.add.image(24, 80, "RedBase");
-  var SpriteAddTab = new Sprite(RedBase.id, "Red", RedBaseImage);
-
-
-  SpriteRedTown.push(SpriteAddTab);
-
-
-  //Neutral TOWN######################################
-  var neutralTown1 = this.add.image(24, 135, "NeutralTown");
+  preload() {
+    this.load.image("playButton", "src/asset/Playbtn.jpg");
   
-  var SpriteAddTab = new Sprite(NeutralTown1.id, "Neutral", neutralTown1);
-  SpriteNeutralTown.push(SpriteAddTab);
-  
-  //BLUE TOWN######################################
-  var BlueBase1 = this.add.image(BlueBase.xposition * 16 + 8, BlueBase.yposition * 16, "BlueBase");
-  var blueTown1 = this.add.image(BlueTown1.xposition * 16 + 8, BlueTown1.yposition * 16 + 7, "BlueTown");
+    this.load.image("quitButton", "src/asset/ExitBtn.jpg");  
+  }
 
- 
-  var SpriteAddTab = new Sprite(BlueBase.id, "Blue", BlueBase1);
-  SpriteBlueTown.push(SpriteAddTab);
-  var SpriteAddTab = new Sprite(BlueTown1.id, "Blue", blueTown1);
-   SpriteBlueTown.push(SpriteAddTab);
+  create()
+  {
+    var style = { font: "bold 32px Arial", fill: "#fff" };
+    var title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Menu", style);
+    title.setOrigin(0.5);
 
-  
-
-
-  
-
-  var InfoBulle = this.add.text(50, 50, {font : '16px Arial', fill: "#ffffff"});
-  InfoBulle.setVisible(false);
-  InfoBulle.setStyle({ fontSize: '9px', backgroundColor: '#202020' });
-
-
-
-
-
-  //ZOOM ###################################################################
-  this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-  var ZOOM = this.cameras.main;
-
-  ZOOM.setZoom(Zoom);
-
-
-
-
-
-
-
-  this.anims.create({
-    key: 'RedMainInfenteryAnim',
-    frames: this.anims.generateFrameNumbers('RedMainInfentery', { start: 0, end: 2 }),
-    frameRate: 5  ,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'BlueMainInfenteryAnim',
-    frames: this.anims.generateFrameNumbers('BlueMainInfentery', { start: 0, end: 2 }),
-    frameRate: 5  ,
-    repeat: -1
-  });
-
-  // Push Des Sprite Dans le Tab***************************************************************************************************
-  var sprite = this.add.sprite(8, 8, 'RedMainInfentery');
-  sprite.setDepth(2);
-  var SpriteAddTab = new Sprite(maininfentery.type, "Red", sprite);
-  TabSprite.push(SpriteAddTab);
-
-  var BlueSprite = this.add.sprite(88, 8, 'BlueMainInfentery');
-  BlueSprite.setDepth(2);
-  var SpriteAddTab = new Sprite(BlueMainInfentery1.type, "Blue", BlueSprite);
-  TabSprite.push(SpriteAddTab);
-
-  //**************************************************************************************************************************** */
-
-  // Play Anim***************************************************************************************************
-  sprite.anims.play('RedMainInfenteryAnim');
-  BlueSprite.anims.play('BlueMainInfenteryAnim');
-
-
-  //**************************************************************************************************************************** */
-
-  this.input.keyboard.on("keydown", function (event) {
+    var playButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, "playButton", this.startGame, this);
+    playButton.setOrigin(0.5);
+    playButton.setInteractive();
+    playButton.on("pointerup",  this.startGame.bind(this) );
     
-    if(!Mouving)
+    var quitButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
+    quitButton.setOrigin(0.5);
+    quitButton.setInteractive();
+    quitButton.on("pointerup", this.quitGame.bind(this));
+  }
+
+  update() {
+   
+  }
+
+  startGame() {
+    // Code pour démarrer le jeu lorsque le bouton "JOUER" est cliqué
+    this.scene.start("Game");
+  }
+
+  quitGame() {
+    // Code pour quitter le jeu lorsque le bouton "QUITTER" est cliqué
+    window.close();
+  }
+}
+
+class GameOver extends Phaser.Scene{
+
+  constructor() {
+    super({ key: "GameOver"});
+  }
+
+  preload() {
+    this.load.image("playButton", "src/asset/Playbtn.jpg");
+  
+    this.load.image("quitButton", "src/asset/ExitBtn.jpg");  
+  }
+
+  create()
+  {
+    var style = { font: "bold 32px Arial", fill: "#fff" };
+    if(Winner == "Red")
     {
-        if (event.key === "ArrowUp") {
-          // Déplacer l'image vers le haut
-          if(ycursorposition != 0)
-          { 
-              cursorPositionTab[ycursorposition][xcursorposition] = 0;
-              cursor.y -= 16;
-              ycursorposition -= 1;
-              cursorPositionTab[ycursorposition][xcursorposition] = 1;
-            
-          }
-        } else if (event.key === "ArrowDown") {
-          // Déplacer l'image vers le bas
+      var title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "RED WIN !", style);
+      title.setOrigin(0.5);
+    }
+    else
+    {
+      var title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "BLUE WIN !", style);
+      title.setOrigin(0.5);
+    }
+    var playButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, "playButton", this.startGame, this);
+    playButton.setOrigin(0.5);
+    playButton.setInteractive();
+    playButton.on("pointerup", this.startGame.bind(this) );
     
-          if(ycursorposition != 9)
-          {   
-              cursorPositionTab[ycursorposition][xcursorposition] = 0;
-              cursor.y += 16;
-              ycursorposition += 1;
-              cursorPositionTab[ycursorposition][xcursorposition] = 1;
-          }
-        } else if (event.key === "ArrowLeft") {
-          // Déplacer l'image vers la gauche
-          
-          if(xcursorposition != 0)
-          { 
-              cursorPositionTab[ycursorposition][xcursorposition] = 0;
-              cursor.x -= 16;
-              xcursorposition -= 1;
-              cursorPositionTab[ycursorposition][xcursorposition] = 1;
-              
-          }
-        } else if (event.key === "ArrowRight") {
-          // Déplacer l'image vers la droite
-          if(xcursorposition != 19)
-          {   
-              cursorPositionTab[ycursorposition][xcursorposition] = 0;
-              cursor.x += 16;
-              xcursorposition += 1;
-              cursorPositionTab[ycursorposition][xcursorposition] = 1;
-              
-          }
-        }else if(event.key === "b")
-        {
-          if(armyPositionTab[ycursorposition][xcursorposition] != 0)
-          {
-              ArmySelected = getArmySelected(armyPositionTab[ycursorposition][xcursorposition]);
-              console.log(ArmySelected);
-          }
-        }else if(event.key === "n")
-        {
-          if(ArmySelected != null)
-          {
-            deplacementInfentery(ArmySelected, getSprite(ArmySelected));
-          }
-        }else if(event.key === "v")
-        {
-          if(ArmySelected != null)
-          {
-            InfoBulle.setText('health : ' + ArmySelected.hp + 
-            "\nAttack :  " + ArmySelected.attack +
-            "\nDefence : " + ArmySelected.defence +
-            "\nMouvement : " + ArmySelected.mouvement);
-            InfoBulle.setPosition((8 + (ArmySelected.xposition) * 16) + 16, 8 + (ArmySelected.yposition - 1) * 16)
-            InfoBulle.setVisible(true);
-          }
-        }else if(event.key === "c")
-        {
-          if(ArmySelected != null)
-          {
-              unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
-          }
-        }else if(event.key === "t")
-        {
-            ChangeTurn();
-        }else if(event.key === "a")
-        {
-          
-          
-          
-          var defenceArmy = getUnity(armyPositionTab[ycursorposition][xcursorposition])
+    var quitButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
+    quitButton.setOrigin(0.5);
+    quitButton.setInteractive();
+    quitButton.on("pointerup",  this.quitGame(this));
+  }
+
+  update() {
+   
+  }
+
+  startGame() {
+    // Code pour démarrer le jeu lorsque le bouton "JOUER" est cliqué
+    this.scene.start("Game");
+  }
+
+  quitGame() {
+    // Code pour quitter le jeu lorsque le bouton "QUITTER" est cliqué
+    window.close();
+  }
+}
+
+
+class Game extends Phaser.Scene{
+
+    constructor(){
+      super({ key: "Game"});
+      
+    }
+
+    preload()
+    {
+      
+      this.load.image("tiles", "src/asset/TILESET.jpg");
+
+      this.load.tilemapTiledJSON("carte", "src/asset/1stMap.json");
+    
+      this.load.image("RedBase", "src/asset/RedBase.png");
+    
+      this.load.image("cursor", "src/asset/cursor.png");
+      
+      this.load.image("NeutralTown", 'src/asset/neutralTown.png');
+    
+      this.load.image("RedTown", "src/asset/RedTown.png");
+    
+      this.load.image("BlueTown", "src/asset/blueTown.png");
+      
+      this.load.image("BlueBase", "src/asset/BlueBase.png");
+
+      this.load.spritesheet("RedBasouka", "src/asset/RedBasouka.png", {
+        frameWidth: 16,
+        frameHeight: 16,
+        spacing: 1,
+      });
+
+      this.load.spritesheet("BlueBasouka", "src/asset/BlueBasouka.png", {
+        frameWidth: 16,
+        frameHeight: 16,
+        spacing: 1,
+      });
+
+      this.load.spritesheet("RedLightTank", "src/asset/RedLightTank.png", {
+        frameWidth: 16,
+        frameHeight: 16,
+        spacing: 1,
+      });
+
+      this.load.spritesheet("BlueLightTank", "src/asset/BlueLightTank.png", {
+        frameWidth: 16,
+        frameHeight: 16,
+        spacing: 1,
+      });
+
+      this.load.spritesheet("RedMainInfentery", "src/asset/MainInfenteryStyleSheet.png", {
+        frameWidth: 16,
+        frameHeight: 16,
+        spacing: 1,
+      });
+    
+      this.load.spritesheet("BlueMainInfentery", "src/asset/BlueMainInfentery.png", {
+        frameWidth: 16,
+        frameHeight: 16,
+        spacing: 1,
+      });
+    }
+
+    create()
+    {
+
+      InitialisationGame();
+      scene = this;
+
+
+      var map = this.make.tilemap({ key: "carte" });
+      var tiles = map.addTilesetImage("MainAssetForMap", "tiles");
+    
+      var layer = map.createLayer("Map", tiles);
+    
+      var cursor = this.add.image(16, 16, "cursor");
+      cursor.setDepth(3);
+    
+     
+    
+    
+      //RED TOWN######################################
+      var RedBaseImage = this.add.image(24, 80, "RedBase");
+      var SpriteAddTab = new Sprite(RedBase.id, "Red", RedBaseImage);
+    
+    
+      SpriteRedTown.push(SpriteAddTab);
+    
+    
+      //Neutral TOWN######################################
+      var neutralTown1 = this.add.image(24, 135, "NeutralTown");
+      
+      var SpriteAddTab = new Sprite(NeutralTown1.id, "Neutral", neutralTown1);
+      SpriteNeutralTown.push(SpriteAddTab);
+      
+      //BLUE TOWN######################################
+      var BlueBase1 = this.add.image(BlueBase.xposition * 16 + 8, BlueBase.yposition * 16, "BlueBase");
+      var blueTown1 = this.add.image(BlueTown1.xposition * 16 + 8, BlueTown1.yposition * 16 + 7, "BlueTown");
+    
+     
+      var SpriteAddTab = new Sprite(BlueBase.id, "Blue", BlueBase1);
+      SpriteBlueTown.push(SpriteAddTab);
+      var SpriteAddTab = new Sprite(BlueTown1.id, "Blue", blueTown1);
+       SpriteBlueTown.push(SpriteAddTab);
+    
+      
+    
+    
+      
+    
+      var InfoBulle = this.add.text(50, 50, {font : '16px Arial', fill: "#ffffff"});
+      InfoBulle.setVisible(false);
+      InfoBulle.setStyle({ fontSize: '9px', backgroundColor: '#202020' });
+    
+      var TurnRed = this.add.text(50, 50, {font : '16px Arial', fill: "#ffffff"});
+      TurnRed.setVisible(true);
+      TurnRed.setStyle({ fontSize: '9px'});
+
+      
+      TurnRed.setText("Turn Red !");
+      TurnRed.setPosition(1, 159);
+    
+      var TurnBlue = this.add.text(50, 50, {font : '16px Arial', fill: "#ffffff"});
+      TurnBlue.setVisible(false);
+      TurnBlue.setStyle({ fontSize: '9px'});
+
+      
+      TurnBlue.setText("Turn Blue !");
+      TurnBlue.setPosition(1, 159);
+
+      InfobulleAttack = this.add.text(50, 50, {font : '16px Arial', fill: "#ffffff"});
+      InfobulleAttack.setVisible(true);
+      InfobulleAttack.setStyle({ fontSize: '9px'});
+
+      InfobulleAttack.setText("HP ATTACK = " + "    " + "HP DEFENCE = ");
+      InfobulleAttack.setPosition(70, 159);
+
+    
+      //ZOOM ###################################################################
+      this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+      var ZOOM = this.cameras.main;
+    
+      ZOOM.setZoom(Zoom);
+    
+    
+    
+    
+    
+    
+    
+      this.anims.create({
+        key: 'RedMainInfenteryAnim',
+        frames: this.anims.generateFrameNumbers('RedMainInfentery', { start: 0, end: 2 }),
+        frameRate: 5  ,
+        repeat: -1
+      });
+    
+      this.anims.create({
+        key: 'BlueMainInfenteryAnim',
+        frames: this.anims.generateFrameNumbers('BlueMainInfentery', { start: 0, end: 2 }),
+        frameRate: 5  ,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: 'RedBasoukaAnim',
+        frames: this.anims.generateFrameNumbers('RedBasouka', { start: 0, end: 2 }),
+        frameRate: 5  ,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: 'BlueBasoukaAnim',
+        frames: this.anims.generateFrameNumbers('BlueBasouka', { start: 0, end: 2 }),
+        frameRate: 5  ,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: 'RedLightTankAnim',
+        frames: this.anims.generateFrameNumbers('RedLightTank', { start: 0, end: 2 }),
+        frameRate: 5  ,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: 'BlueLightTankAnim',
+        frames: this.anims.generateFrameNumbers('BlueLightTank', { start: 0, end: 2 }),
+        frameRate: 5  ,
+        repeat: -1
+      });
+
+
+
+    
+      // Push Des Sprite Dans le Tab***************************************************************************************************
+      var sprite = this.add.sprite(8, 8, 'RedMainInfentery');
+      sprite.setDepth(2);
+      var SpriteAddTab = new Sprite(maininfentery.id, "Red", sprite);
+      TabSprite.push(SpriteAddTab);
+    
+      var BlueSprite = this.add.sprite(88, 8, 'BlueMainInfentery');
+      BlueSprite.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueMainInfentery1.id, "Blue", BlueSprite);
+      TabSprite.push(SpriteAddTab);
+
+      console.log(BlueLightTank);
+      var BlueLightTankSprite = this.add.sprite(BlueLightTank.xposition * 16 + 8  , BlueLightTank.yposition * 16 + 8  , 'BlueLightTank');
+      BlueLightTankSprite.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueLightTank.id, "Blue", BlueLightTankSprite);
+      TabSprite.push(SpriteAddTab);
+
+      var RedLightTankSprite = this.add.sprite(RedLightTank.xposition * 16 + 8, RedLightTank.yposition * 16 + 8 , 'RedLightTank');
+      RedLightTankSprite.setDepth(2);
+      var SpriteAddTab = new Sprite(RedLightTank.id, "Red", RedLightTankSprite);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueBazoukaSprite = this.add.sprite(BlueBazouka.xposition * 16 + 8  , BlueBazouka.yposition * 16 + 8  , 'BlueBasouka');
+      BlueBazoukaSprite.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueBazouka.id, "Blue", BlueBazoukaSprite);
+      TabSprite.push(SpriteAddTab);
+
+      var RedBazoukaSprite = this.add.sprite(RedBazouka.xposition * 16 + 8, RedBazouka.yposition * 16 + 8 , 'RedBasouka');
+      RedBazoukaSprite.setDepth(2);
+      var SpriteAddTab = new Sprite(RedBazouka.id, "Red", RedBazoukaSprite);
+      TabSprite.push(SpriteAddTab);
+
+    
+      //**************************************************************************************************************************** */
+    
+      // Play Anim***************************************************************************************************
+      sprite.anims.play('RedMainInfenteryAnim');
+      BlueSprite.anims.play('BlueMainInfenteryAnim');
+      BlueLightTankSprite.play("BlueLightTankAnim");
+      RedLightTankSprite.play("RedLightTankAnim");
+      BlueBazoukaSprite.play("BlueBasoukaAnim");
+      RedBazoukaSprite.play("RedBasoukaAnim");
+    
+    
+      //**************************************************************************************************************************** */
+    
+      this.input.keyboard.on("keydown", function (event) {
         
-          if(defenceArmy != false)
-          {   
-            var check = VerifyTheProximityOfUnity(ArmySelected, defenceArmy);
-            console.log(check);
-              if(check)
+        if(!Mouving)
+        {
+            if (event.key === "ArrowUp") {
+              // Déplacer l'image vers le haut
+              if(ycursorposition != 0)
+              { 
+                  cursorPositionTab[ycursorposition][xcursorposition] = 0;
+                  cursor.y -= 16;
+                  ycursorposition -= 1;
+                  cursorPositionTab[ycursorposition][xcursorposition] = 1;
+                
+              }
+            } else if (event.key === "ArrowDown") {
+              // Déplacer l'image vers le bas
+        
+              if(ycursorposition != 9)
+              {   
+                  cursorPositionTab[ycursorposition][xcursorposition] = 0;
+                  cursor.y += 16;
+                  ycursorposition += 1;
+                  cursorPositionTab[ycursorposition][xcursorposition] = 1;
+              }
+            } else if (event.key === "ArrowLeft") {
+              // Déplacer l'image vers la gauche
+              
+              if(xcursorposition != 0)
+              { 
+                  cursorPositionTab[ycursorposition][xcursorposition] = 0;
+                  cursor.x -= 16;
+                  xcursorposition -= 1;
+                  cursorPositionTab[ycursorposition][xcursorposition] = 1;
+                  
+              }
+            } else if (event.key === "ArrowRight") {
+              // Déplacer l'image vers la droite
+              if(xcursorposition != 19)
+              {   
+                  cursorPositionTab[ycursorposition][xcursorposition] = 0;
+                  cursor.x += 16;
+                  xcursorposition += 1;
+                  cursorPositionTab[ycursorposition][xcursorposition] = 1;
+                  
+              }
+            }else if(event.key === "b")
+            {
+              if(armyPositionTab[ycursorposition][xcursorposition] != 0)
               {
-                  if(armyPositionTab[ycursorposition][xcursorposition] != 0)
+                  ArmySelected = getArmySelected(armyPositionTab[ycursorposition][xcursorposition]);
+                  console.log(ArmySelected);
+              }
+            }else if(event.key === "n")
+            {
+              if(ArmySelected != null)
+              {
+                deplacementInfentery(ArmySelected, getSprite(ArmySelected));
+              }
+            }else if(event.key === "v")
+            {
+              if(ArmySelected != null)
+              {
+                InfoBulle.setText('health : ' + ArmySelected.hp + 
+                "\nAttack :  " + ArmySelected.attack +
+                "\nDefence : " + ArmySelected.defence +
+                "\nMouvement : " + ArmySelected.mouvement);
+                InfoBulle.setPosition((8 + (ArmySelected.xposition) * 16) + 16, 8 + (ArmySelected.yposition - 1) * 16)
+                InfoBulle.setVisible(true);
+              }
+            }else if(event.key === "c")
+            {
+              if(ArmySelected != null)
+              {
+                  unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
+              }
+            }else if(event.key === "t")
+            {   
+                
+                ChangeTurn();
+                ArmySelected = null;
+
+                if(timeTurn == 0)
+                {
+                
+                  TurnRed.setVisible(true);
+                  TurnBlue.setVisible(false);
+                }
+                else
+                {
+                  TurnBlue.setVisible(true);
+                  TurnRed.setVisible(false);
+                }
+              
+            }else if(event.key === "a")
+            {
+              
+              
+              
+              var defenceArmy = getUnity(armyPositionTab[ycursorposition][xcursorposition])
+            
+              if(defenceArmy != false)
+              {   
+                var check = VerifyTheProximityOfUnity(ArmySelected, defenceArmy);
+                console.log(check);
+                  if(check)
                   {
-                      UnityAttack(ArmySelected, defenceArmy);
+                      if(armyPositionTab[ycursorposition][xcursorposition] != 0)
+                      {
+                          UnityAttack(ArmySelected, defenceArmy);
+                      }
+                  }
+                  else
+                  {
+                    console.log("Trop loin");
                   }
               }
               else
               {
-                console.log("Trop loin");
+                console.log("Case Vide");
               }
+            }
+          
           }
-          else
-          {
-            console.log("Case Vide");
-          }
-        }
+        });
+    
+    
+      this.input.keyboard.on('keyup', function(event) {
+        // Cache l'info-bulle lorsque la touche est relâchée
+        InfoBulle.setVisible(false);
+      });
       
-      }
-    });
-
-
-  this.input.keyboard.on('keyup', function(event) {
-    // Cache l'info-bulle lorsque la touche est relâchée
-    InfoBulle.setVisible(false);
-});
-  
-  game.start();
+      game.start();
+    }
 }
 
-function update(time, delta) {
- 
-}
+game.scene.add("Menu", Menu);
+game.scene.add("Game", Game);
+game.scene.add("GameOver", GameOver);
+
+
+game.scene.start("Menu");
+
+
 
 function InitialisationTab(tableau)
 {
@@ -477,15 +779,15 @@ function InitInfenteryTab(InfenteryTab, tableau)
   { 
     var xpositioArmy = element.xposition;
     var ypositionArmy = element.yposition;
-    tableau[ypositionArmy][xpositioArmy] = element.type;
+    tableau[ypositionArmy][xpositioArmy] = element.id;
   }
     
   
 }
-function getArmySelected(type)
+function getArmySelected(id)
 { 
   for (let element of InfenteryTab) {
-    if (element.type === type) {
+    if (element.id === id) {
         console.log(element);
         if(timeTurn == 0)
         {
@@ -505,10 +807,10 @@ function getArmySelected(type)
   }
 }
 
-function getUnity(type)
+function getUnity(id)
 {
   for (let element of InfenteryTab) {
-    if (element.type === type) {
+    if (element.id === id) {
       return element;
     }
   }
@@ -559,7 +861,7 @@ async function deplacementInfentery(unitSelected, sprite)
         {
           unitSelected.MoveInfentery(xcursorposition, ycursorposition);
           armyPositionTab[oldYposition - 1][oldXposition - 1] = 0;
-          armyPositionTab[ycursorposition][xcursorposition] = unitSelected.type;
+          armyPositionTab[ycursorposition][xcursorposition] = unitSelected.id;
           console.table(armyPositionTab);
           
           //faire bouger l'image petit a petit
@@ -647,12 +949,78 @@ function unityCapture(idTown)
             
             if(idTown == 3)
             {
-                var SpriteSearch = SearchSpriteBlueTown(idTown);
-                Sprite.sprite.setVisible(false);
+              var SpriteSearch = SearchSpriteBlueTown(idTown);
+              SpriteSearch.sprite.setVisible(false);
+              
+              var RedBaseSprite2 = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16, "RedBase");
+              console.log(RedBaseSprite2);
+              RedBaseSprite2.setDepth(0);
+              
+              var RedBase2 = new Base(TownCaptured.id, "Red", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
+
+              var SpriteAddTab = new Sprite(TownCaptured.id, "Red", RedBaseSprite2);
+              console.log(SpriteAddTab);
+              SpriteBlueTown.splice(BlueTownVec.indexOf(TownCaptured), 1);
+              
+              SpriteRedTown.push(SpriteAddTab);
+
+              BlueTownVec.splice(BlueTownVec.indexOf(TownCaptured), 1);
+
+              RedTownVec.push(RedBase2);
+
+              Winner = "Red";
+              game.scene.start("GameOver");
+              game.scene.remove('Game');
             }
             else
             {
+              if(TownCaptured.Team == "Blue")
+              {
+                var SpriteSearch = SearchSpriteBlueTown(idTown);
+                SpriteSearch.sprite.setVisible(false);
+  
+                var RedTown2Sprite = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16 + 6, "RedTown");
+                RedTown2Sprite.setDepth(0);
+                
+                var RedTown2 = new Base(TownCaptured.id, "Red", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
+  
+                var SpriteAddTab = new Sprite(TownCaptured.id, "Red", RedTown2Sprite);
 
+                SpriteBlueTown.splice(BlueTownVec.indexOf(TownCaptured), 1);
+              
+                SpriteRedTown.push(SpriteAddTab);
+  
+                BlueTownVec.splice(BlueTownVec.indexOf(TownCaptured), 1);
+  
+                RedTownVec.push(RedTown2);
+
+                
+  
+              }
+              else
+              {
+
+                var SpriteSearch = SearchSpriteNeutralTown(idTown);
+                SpriteSearch.sprite.setVisible(false);
+  
+                var RedTown2Sprite = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16 + 6, "BlueTown");
+                RedTown2Sprite.setDepth(0);
+                
+                var BlueTown2 = new Base(TownCaptured.id, "Red", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
+  
+                var SpriteAddTab = new Sprite(TownCaptured.id, "Red", RedTown2Sprite);
+
+                SpriteNeutralTown.splice(NeutralTownVec.indexOf(TownCaptured), 1);
+              
+                SpriteRedTown.push(SpriteAddTab);
+  
+                NeutralTownVec.splice(NeutralTownVec.indexOf(TownCaptured), 1);
+  
+                RedTownVec.push(RedTown2);
+  
+              }
+
+             
             }
 
 
@@ -682,9 +1050,7 @@ function unityCapture(idTown)
               
               var BlueBase2 = new Base(TownCaptured.id, "Blue", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
 
-              var SpriteAddTab = new Sprite(TownCaptured.id, "Blue", BlueBase2);
-              
-              console.log(RedTownVec.indexOf(TownCaptured));
+              var SpriteAddTab = new Sprite(TownCaptured.id, "Blue", BlueBaseSprite2);
              
               SpriteRedTown.splice(RedTownVec.indexOf(TownCaptured), 1);
               
@@ -693,10 +1059,66 @@ function unityCapture(idTown)
               RedTownVec.splice(RedTownVec.indexOf(TownCaptured), 1);
 
               BlueTownVec.push(BlueBase2);
+
+              Winner = "Blue";
+              game.scene.start("GameOver");
+              game.scene.remove('Game');
             }
             else
             {
+              if(TownCaptured.Team == "Red")
+              {
+                var SpriteSearch = SearchSpriteRedTown(idTown);
+                SpriteSearch.sprite.setVisible(false);
+  
+                var BlueTown2Sprite = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16 + 6, "BlueTown");
+                BlueTown2Sprite.setDepth(0);
+                
+                var BlueTown2 = new Base(TownCaptured.id, "Blue", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
+  
+                var SpriteAddTab = new Sprite(TownCaptured.id, "Blue", BlueTown2Sprite);
+
+
+
+                SpriteRedTown.splice(RedTownVec.indexOf(TownCaptured), 1);
               
+                SpriteBlueTown.push(SpriteAddTab);
+  
+                RedTownVec.splice(RedTownVec.indexOf(TownCaptured), 1);
+  
+                BlueTownVec.push(BlueTown2);
+  
+              }
+              else
+              {
+
+                var SpriteSearch = SearchSpriteNeutralTown(idTown);
+                SpriteSearch.sprite.setVisible(false);
+  
+                var BlueTown2Sprite = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16 + 6, "BlueTown");
+                BlueTown2Sprite.setDepth(0);
+                
+                var BlueTown2 = new Base(TownCaptured.id, "Blue", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
+  
+                var SpriteAddTab = new Sprite(TownCaptured.id, "Blue", BlueTown2Sprite);
+
+                SpriteNeutralTown.splice(NeutralTownVec.indexOf(TownCaptured), 1);
+              
+                SpriteBlueTown.push(SpriteAddTab);
+  
+                NeutralTownVec.splice(NeutralTownVec.indexOf(TownCaptured), 1);
+  
+                BlueTownVec.push(BlueTown2);
+  
+              }
+
+              console.log(SpriteNeutralTown);
+
+              console.log(NeutralTownVec)
+
+              console.log(SpriteBlueTown);
+
+              console.log(BlueTownVec);
             }
         }
         else
@@ -749,7 +1171,7 @@ function getSprite(InfenterySelected)
 {
   for(let element of TabSprite)
   {
-    if(element.id == InfenterySelected.type)
+    if(element.id == InfenterySelected.id)
       return element.sprite;
   }
 }
@@ -778,22 +1200,64 @@ function ReloadMouvement()
 
 function UnityAttack(AttackUnity, defenceUnity)
 {   
+
+    var HpDefenserToDesplay;
+    var HpAttackerToDesplay;
     var puissanceDesAttaquant = AttackUnity.attack + (AttackUnity.multiplicateur * AttackUnity.hp);
-    var degat = (puissanceDesAttaquant * 0.5 - defenceUnity.defence * 0.2) + 10;
+    var degat = (puissanceDesAttaquant * 0.5 - defenceUnity.defence * 0.1) + 10;
+    
+    if(defenceUnity.isBlinde())
+    { 
+        console.log("IS BLINDE ! Def")
+        degat *= AttackUnity.mutiplicateurAgainstArmor;
+    }
+    if(defenceUnity.isInfentry())
+    {   
+      console.log("IS Inf ! Def");
+        degat *= AttackUnity.MultiplicatorAgainstInfetry;
+    }
+    
     defenceUnity.hp -= degat;
 
     defenceUnity.hp = Math.floor(defenceUnity.hp);
 
     if(!VerifyHpOfUnity(defenceUnity))
-    {
+    { 
+      HpDefenserToDesplay = defenceUnity.hp;
       var puissanceDesDefenseur = defenceUnity.attack + (defenceUnity.multiplicateur * defenceUnity.hp);
-      var degat = (puissanceDesDefenseur * 0.3 - AttackUnity.defence * 0.1) + 10;
+      var degat = (puissanceDesDefenseur * 0.2 - AttackUnity.defence * 0.1) + 10;
+      
+      if(AttackUnity.isBlinde())
+      {   
+        console.log("IS BLINDE ! AT")
+          degat *= defenceUnity.mutiplicateurAgainstArmor;
+      }
+      if(AttackUnity.isInfentry())
+      {
+        console.log("IS Inf ! At");
+          degat *= defenceUnity.MultiplicatorAgainstInfetry;
+      }
+    
       AttackUnity.hp -= degat;
   
       AttackUnity.hp = Math.floor(AttackUnity.hp);
   
-      VerifyHpOfUnity(AttackUnity);
+      if(VerifyHpOfUnity(AttackUnity))
+      {
+        HpAttackerToDesplay = "DESTROYED";
+      }
+      else
+      {
+        HpAttackerToDesplay = AttackUnity.hp;
+      }
     }
+    else
+    {
+        HpDefenserToDesplay = "DESTROYED";
+        HpAttackerToDesplay = AttackUnity.hp;
+    }
+
+    InfobulleAttack.setText("HP ATTACK = " + HpAttackerToDesplay + "  " + "HP DEFENCE = " + HpDefenserToDesplay);
 
 }
 
@@ -808,9 +1272,10 @@ function VerifyHpOfUnity(UnityToCheck)
 
       console.table(armyPositionTab);
 
-      InfenteryTab.splice((UnityToCheck.type - 1), 1);
+      InfenteryTab.splice((UnityToCheck.id - 1), 1);
       console.log(InfenteryTab);
 
+      LookIfTheGameIsEnd();
       return true;
 
     }
@@ -852,4 +1317,32 @@ function SearchSpriteBlueTown(idTown)
       if(element.id == idTown)
         return element;
   }
+}
+
+function LookIfTheGameIsEnd()
+{
+  var BlueTeamIsOver = false;
+  var RedTeamIsOver = false;
+  for (let element of InfenteryTab ) {
+    console.log(element.team);  
+      if(element.team == "Red")
+        RedTeamIsOver = true;
+      if(element.team == "Blue")
+        BlueTeamIsOver = true;
+      if(BlueTeamIsOver && RedTeamIsOver)
+        break;
+  }
+
+  if(RedTeamIsOver == false)
+  { 
+    Winner = "Blue";
+    game.scene.start("GameOver");
+  }
+
+  if(BlueTeamIsOver == false)
+  {
+    Winner = "Red";
+    game.scene.start("GameOver");
+  }
+    
 }
