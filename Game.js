@@ -301,12 +301,12 @@ class Menu extends Phaser.Scene{
     var playButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, "playButton", this.startGame, this);
     playButton.setOrigin(0.5);
     playButton.setInteractive();
-    playButton.on("pointerup",  this.startGame.bind(this) );
+    playButton.on("pointerup",  this.startGame, this);
     
     var quitButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
     quitButton.setOrigin(0.5);
     quitButton.setInteractive();
-    quitButton.on("pointerup", this.quitGame.bind(this));
+    quitButton.on("pointerup", this.quitGame, this);
   }
 
   update() {
@@ -352,12 +352,12 @@ class GameOver extends Phaser.Scene{
     var playButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, "playButton", this.startGame, this);
     playButton.setOrigin(0.5);
     playButton.setInteractive();
-    playButton.on("pointerup", this.startGame.bind(this) );
+    playButton.on("pointerup", this.startGame, this);
     
     var quitButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
     quitButton.setOrigin(0.5);
     quitButton.setInteractive();
-    quitButton.on("pointerup",  this.quitGame(this));
+    quitButton.on("pointerup",  this.quitGame, this);
   }
 
   update() {
@@ -1003,7 +1003,7 @@ function unityCapture(idTown)
                 var SpriteSearch = SearchSpriteNeutralTown(idTown);
                 SpriteSearch.sprite.setVisible(false);
   
-                var RedTown2Sprite = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16 + 6, "BlueTown");
+                var RedTown2Sprite = scene.add.image(TownCaptured.xposition * 16 + 8, TownCaptured.yposition * 16 + 6, "RedTown");
                 RedTown2Sprite.setDepth(0);
                 
                 var BlueTown2 = new Base(TownCaptured.id, "Red", 20, 10, TownCaptured.xposition, TownCaptured.yposition);
