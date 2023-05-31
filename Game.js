@@ -4,6 +4,8 @@ var player = {
 
 window.addEventListener('message', (event) => {
 	if (event.data) player.username = event.data.username;
+
+  getPB();
 });
 
 function getPB() {
@@ -368,8 +370,6 @@ function InitialisationGame()
   scene;
 
   Mouving = false;
-
-  getpb();
 
 }
 
