@@ -4,8 +4,9 @@ var player = {
 
 window.addEventListener('message', (event) => {
 	if (event.data) player.username = event.data.username;
-
-	  getPB();
+  
+    getPB();
+    console.log(player.pb)
 });
 
 function getPB() {
@@ -28,6 +29,7 @@ function getPB() {
 			})
 			.then((data) => {
 				player.pb = data.score;
+        console.log(player.pb)
 			})
 			.catch((err) => {
 				console.log('Error while get pb request : ', err);
@@ -540,6 +542,7 @@ class Game extends Phaser.Scene{
 
       InitialisationGame();
       console.log(player.username);
+      console.log(player.pb);
       scene = this;
 
 
