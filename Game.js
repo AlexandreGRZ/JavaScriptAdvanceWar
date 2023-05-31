@@ -127,7 +127,8 @@ var highScore = 0;
 
 
 //si TimeTurn == 0 Alors équipe des rouges joue, si c'est 1 c'est au tour des bleus
-var FOREST = 68;
+var FOREST = 2; 
+var MONTAIN = 5;
 var PLAIN = 1;
 
 
@@ -232,23 +233,76 @@ var Mouving = false;
 function InitialisationGame()
 {
   TabSprite = [];
-  maininfentery = new MainInfentery(1,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 0, 0, true);
-  BlueMainInfentery1 = new MainInfentery(2,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 5, 0, true);
 
-  RedLightTank = new MainInfentery(3,"TankInfentry", 100, 35, 40, 0, 6,"Red",0.5, 1, 1.2, 6, 3, true);
-  BlueLightTank = new MainInfentery(4,"TankInfentry", 100, 35, 40, 0, 6,"Blue",0.5, 1, 1.2, 7, 6, true);
+  //MainRedInfetery#####################
 
-  RedBazouka = new MainInfentery(5,"Bazouka", 100, 30, 10, 0, 4,"Red",0.5, 1, 1, 2, 3, true);
-  BlueBazouka = new MainInfentery(6,"Bazouka", 100, 30, 10, 0, 4,"Blue",0.5, 1, 1, 3, 7, true);
+  RedMainInfentery1 = new MainInfentery(1,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 0, 4, true);
+  RedMainInfentery2 = new MainInfentery(2,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 4, 6, true);
+  RedMainInfentery3 = new MainInfentery(3,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 5, 9, true);
+  RedMainInfentery4 = new MainInfentery(4,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 1, 7, true);
+
+  //MainBlueInfetery#####################
+
+  BlueMainInfentery1 = new MainInfentery(5,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 14, 1, true);
+  BlueMainInfentery2 = new MainInfentery(6,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 17, 3, true);
+  BlueMainInfentery3 = new MainInfentery(7,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 17, 8, true);
+  BlueMainInfentery4 = new MainInfentery(8,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 19, 5, true);
+  
+  //RedLightTank#####################
+  
+  RedLightTank1 = new MainInfentery(9,"TankInfentry", 100, 35, 40, 0, 6,"Red",0.5, 1, 1.2, 1, 8, true);
+  RedLightTank2 = new MainInfentery(10,"TankInfentry", 100, 35, 40, 0, 6,"Red",0.5, 1, 1.2, 2, 6, true);
+  RedLightTank3 = new MainInfentery(11,"TankInfentry", 100, 35, 40, 0, 6,"Red",0.5, 1, 1.2, 0, 5, true);
+  
+  //BlueLightTank#####################
+  
+  BlueLightTank1 = new MainInfentery(12,"TankInfentry", 100, 35, 40, 0, 6,"Blue",0.5, 1, 1.2, 18, 1, true);
+  BlueLightTank2 = new MainInfentery(13,"TankInfentry", 100, 35, 40, 0, 6,"Blue",0.5, 1, 1.2, 19, 3, true);
+  BlueLightTank3 = new MainInfentery(14,"TankInfentry", 100, 35, 40, 0, 6,"Blue",0.5, 1, 1.2, 15, 0, true);
+  
+  
+  
+  
+  //RedBazouka#####################
+ 
+  RedBazouka1 = new MainInfentery(15,"Bazouka", 100, 30, 10, 0, 4,"Red",0.5, 1, 1, 3, 7, true);
+  RedBazouka2 = new MainInfentery(16,"Bazouka", 100, 30, 10, 0, 4,"Red",0.5, 1, 1, 1, 1, true);
+  RedBazouka3 = new MainInfentery(17,"Bazouka", 100, 30, 10, 0, 4,"Red",0.5, 1, 1, 3, 9, true);
+  
+  //BlueBazouka#####################
+  
+  BlueBazouka1 = new MainInfentery(18,"Bazouka", 100, 30, 10, 0, 4,"Blue",0.5, 1, 1, 17, 1, true);
+  BlueBazouka2 = new MainInfentery(19,"Bazouka", 100, 30, 10, 0, 4,"Blue",0.5, 1, 1, 16, 5, true);
+  BlueBazouka3 = new MainInfentery(20,"Bazouka", 100, 30, 10, 0, 4,"Blue",0.5, 1, 1, 15, 8, true);
 
   InfenteryTab = [];
 
-  InfenteryTab.push(maininfentery);
+  InfenteryTab.push(RedMainInfentery1);
+  InfenteryTab.push(RedMainInfentery2);
+  InfenteryTab.push(RedMainInfentery3);
+  InfenteryTab.push(RedMainInfentery4);
+
   InfenteryTab.push(BlueMainInfentery1);
-  InfenteryTab.push(RedLightTank);
-  InfenteryTab.push(BlueLightTank);
-  InfenteryTab.push(RedBazouka);
-  InfenteryTab.push(BlueBazouka);
+  InfenteryTab.push(BlueMainInfentery2);
+  InfenteryTab.push(BlueMainInfentery3);
+  InfenteryTab.push(BlueMainInfentery4);
+
+  InfenteryTab.push(RedLightTank1);
+  InfenteryTab.push(RedLightTank2);
+  InfenteryTab.push(RedLightTank3);
+
+  InfenteryTab.push(BlueLightTank1);
+  InfenteryTab.push(BlueLightTank2);
+  InfenteryTab.push(BlueLightTank3);
+
+
+  InfenteryTab.push(RedBazouka1);
+  InfenteryTab.push(RedBazouka2);
+  InfenteryTab.push(RedBazouka3);
+
+  InfenteryTab.push(BlueBazouka1);
+  InfenteryTab.push(BlueBazouka2);
+  InfenteryTab.push(BlueBazouka3);
 
 
 
@@ -762,47 +816,158 @@ class Game extends Phaser.Scene{
 
     
       // Push Des Sprite Dans le Tab***************************************************************************************************
-      var sprite = this.add.sprite(8, 8, 'RedMainInfentery');
-      sprite.setDepth(2);
-      var SpriteAddTab = new Sprite(maininfentery.id, "Red", sprite);
-      TabSprite.push(SpriteAddTab);
-    
-      var BlueSprite = this.add.sprite(88, 8, 'BlueMainInfentery');
-      BlueSprite.setDepth(2);
-      var SpriteAddTab = new Sprite(BlueMainInfentery1.id, "Blue", BlueSprite);
+      //RED TEAM *************************************************************************************
+        //MainInfetry
+      var MainInfeterySprite1 = this.add.sprite(RedMainInfentery1.xposition * 16 + 8, RedMainInfentery1.yposition * 16 + 8, 'RedMainInfentery');
+      MainInfeterySprite1.setDepth(2);
+      var SpriteAddTab = new Sprite(RedMainInfentery1.id, "Red", MainInfeterySprite1);
       TabSprite.push(SpriteAddTab);
 
-      console.log(BlueLightTank);
-      var BlueLightTankSprite = this.add.sprite(BlueLightTank.xposition * 16 + 8  , BlueLightTank.yposition * 16 + 8  , 'BlueLightTank');
-      BlueLightTankSprite.setDepth(2);
-      var SpriteAddTab = new Sprite(BlueLightTank.id, "Blue", BlueLightTankSprite);
+      var MainInfeterySprite2 = this.add.sprite(RedMainInfentery2.xposition * 16 + 8, RedMainInfentery2.yposition * 16 + 8, 'RedMainInfentery');
+      MainInfeterySprite2.setDepth(2);
+      var SpriteAddTab = new Sprite(RedMainInfentery2.id, "Red", MainInfeterySprite2);
       TabSprite.push(SpriteAddTab);
 
-      var RedLightTankSprite = this.add.sprite(RedLightTank.xposition * 16 + 8, RedLightTank.yposition * 16 + 8 , 'RedLightTank');
-      RedLightTankSprite.setDepth(2);
-      var SpriteAddTab = new Sprite(RedLightTank.id, "Red", RedLightTankSprite);
+      var MainInfeterySprite3 = this.add.sprite(RedMainInfentery3.xposition * 16 + 8, RedMainInfentery3.yposition * 16 + 8, 'RedMainInfentery');
+      MainInfeterySprite3.setDepth(2);
+      var SpriteAddTab = new Sprite(RedMainInfentery3.id, "Red", MainInfeterySprite3);
       TabSprite.push(SpriteAddTab);
 
-      var BlueBazoukaSprite = this.add.sprite(BlueBazouka.xposition * 16 + 8  , BlueBazouka.yposition * 16 + 8  , 'BlueBasouka');
-      BlueBazoukaSprite.setDepth(2);
-      var SpriteAddTab = new Sprite(BlueBazouka.id, "Blue", BlueBazoukaSprite);
+      var MainInfeterySprite4 = this.add.sprite(RedMainInfentery4.xposition * 16 + 8, RedMainInfentery4.yposition * 16 + 8, 'RedMainInfentery');
+      MainInfeterySprite4.setDepth(2);
+      var SpriteAddTab = new Sprite(RedMainInfentery4.id, "Red", MainInfeterySprite4);
+      TabSprite.push(SpriteAddTab);
+        
+
+        // LightTank
+      var RedLightTankSprite1 = this.add.sprite(RedLightTank1.xposition * 16 + 8, RedLightTank1.yposition * 16 + 8 , 'RedLightTank');
+      RedLightTankSprite1.setDepth(2);
+      var SpriteAddTab = new Sprite(RedLightTank1.id, "Red", RedLightTankSprite1);
       TabSprite.push(SpriteAddTab);
 
-      var RedBazoukaSprite = this.add.sprite(RedBazouka.xposition * 16 + 8, RedBazouka.yposition * 16 + 8 , 'RedBasouka');
-      RedBazoukaSprite.setDepth(2);
-      var SpriteAddTab = new Sprite(RedBazouka.id, "Red", RedBazoukaSprite);
+      var RedLightTankSprite2 = this.add.sprite(RedLightTank2.xposition * 16 + 8, RedLightTank2.yposition * 16 + 8 , 'RedLightTank');
+      RedLightTankSprite2.setDepth(2);
+      var SpriteAddTab = new Sprite(RedLightTank2.id, "Red", RedLightTankSprite2);
       TabSprite.push(SpriteAddTab);
+
+      var RedLightTankSprite3 = this.add.sprite(RedLightTank3.xposition * 16 + 8, RedLightTank3.yposition * 16 + 8 , 'RedLightTank');
+      RedLightTankSprite3.setDepth(2);
+      var SpriteAddTab = new Sprite(RedLightTank3.id, "Red", RedLightTankSprite3);
+      TabSprite.push(SpriteAddTab);
+        
+
+        //RedBasouka
+      var RedBazoukaSprite1 = this.add.sprite(RedBazouka1.xposition * 16 + 8, RedBazouka1.yposition * 16 + 8 , 'RedBasouka');
+      RedBazoukaSprite1.setDepth(2);
+      var SpriteAddTab = new Sprite(RedBazouka1.id, "Red", RedBazoukaSprite1);
+      TabSprite.push(SpriteAddTab);
+
+      var RedBazoukaSprite2 = this.add.sprite(RedBazouka2.xposition * 16 + 8, RedBazouka2.yposition * 16 + 8 , 'RedBasouka');
+      RedBazoukaSprite2.setDepth(2);
+      var SpriteAddTab = new Sprite(RedBazouka2.id, "Red", RedBazoukaSprite2);
+      TabSprite.push(SpriteAddTab);
+
+      var RedBazoukaSprite3 = this.add.sprite(RedBazouka3.xposition * 16 + 8, RedBazouka3.yposition * 16 + 8 , 'RedBasouka');
+      RedBazoukaSprite3.setDepth(2);
+      var SpriteAddTab = new Sprite(RedBazouka3.id, "Red", RedBazoukaSprite3);
+      TabSprite.push(SpriteAddTab);
+
+
+      //BLUE TEAM *************************************************************************************
+      
+
+
+
+      //mainInfetery
+      var BlueSprite1 = this.add.sprite(BlueMainInfentery1.xposition * 16 + 8, BlueMainInfentery1.yposition * 16 + 8, 'BlueMainInfentery');
+      BlueSprite1.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueMainInfentery1.id, "Blue", BlueSprite1);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueSprite2 = this.add.sprite(BlueMainInfentery2.xposition * 16 + 8, BlueMainInfentery2.yposition * 16 + 8, 'BlueMainInfentery');
+      BlueSprite2.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueMainInfentery2.id, "Blue", BlueSprite2);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueSprite3 = this.add.sprite(BlueMainInfentery3.xposition * 16 + 8, BlueMainInfentery3.yposition * 16 + 8, 'BlueMainInfentery');
+      BlueSprite3.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueMainInfentery3.id, "Blue", BlueSprite3);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueSprite4 = this.add.sprite(BlueMainInfentery4.xposition * 16 + 8, BlueMainInfentery4.yposition * 16 + 8, 'BlueMainInfentery');
+      BlueSprite4.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueMainInfentery4.id, "Blue", BlueSprite4);
+      TabSprite.push(SpriteAddTab);
+
+
+      
+      
+
+      //LightTank
+      var BlueLightTankSprite1 = this.add.sprite(BlueLightTank1.xposition * 16 + 8  , BlueLightTank1.yposition * 16 + 8  , 'BlueLightTank');
+      BlueLightTankSprite1.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueLightTank1.id, "Blue", BlueLightTankSprite1);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueLightTankSprite2 = this.add.sprite(BlueLightTank2.xposition * 16 + 8  , BlueLightTank2.yposition * 16 + 8  , 'BlueLightTank');
+      BlueLightTankSprite2.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueLightTank2.id, "Blue", BlueLightTankSprite2);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueLightTankSprite3 = this.add.sprite(BlueLightTank3.xposition * 16 + 8  , BlueLightTank3.yposition * 16 + 8  , 'BlueLightTank');
+      BlueLightTankSprite3.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueLightTank3.id, "Blue", BlueLightTankSprite3);
+      TabSprite.push(SpriteAddTab);
+
+      //Bazouka
+      var BlueBazoukaSprite1 = this.add.sprite(BlueBazouka1.xposition * 16 + 8  , BlueBazouka1.yposition * 16 + 8  , 'BlueBasouka');
+      BlueBazoukaSprite1.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueBazouka1.id, "Blue", BlueBazoukaSprite1);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueBazoukaSprite2 = this.add.sprite(BlueBazouka2.xposition * 16 + 8  , BlueBazouka2.yposition * 16 + 8  , 'BlueBasouka');
+      BlueBazoukaSprite2.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueBazouka2.id, "Blue", BlueBazoukaSprite2);
+      TabSprite.push(SpriteAddTab);
+
+      var BlueBazoukaSprite3 = this.add.sprite(BlueBazouka3.xposition * 16 + 8  , BlueBazouka3.yposition * 16 + 8  , 'BlueBasouka');
+      BlueBazoukaSprite3.setDepth(2);
+      var SpriteAddTab = new Sprite(BlueBazouka3.id, "Blue", BlueBazoukaSprite3);
+      TabSprite.push(SpriteAddTab);
+      
 
       //**************************************************************************************************************************** */
     
       // Play Anim***************************************************************************************************
-      sprite.anims.play('RedMainInfenteryAnim');
-      BlueSprite.anims.play('BlueMainInfenteryAnim');
-      BlueLightTankSprite.play("BlueLightTankAnim");
-      RedLightTankSprite.play("RedLightTankAnim");
-      BlueBazoukaSprite.play("BlueBasoukaAnim");
-      RedBazoukaSprite.play("RedBasoukaAnim");
-    
+      MainInfeterySprite1.anims.play('RedMainInfenteryAnim');
+      MainInfeterySprite2.anims.play('RedMainInfenteryAnim');
+      MainInfeterySprite3.anims.play('RedMainInfenteryAnim');
+      MainInfeterySprite4.anims.play('RedMainInfenteryAnim');
+
+
+      BlueSprite1.anims.play('BlueMainInfenteryAnim');
+      BlueSprite2.anims.play('BlueMainInfenteryAnim');
+      BlueSprite3.anims.play('BlueMainInfenteryAnim');
+      BlueSprite4.anims.play('BlueMainInfenteryAnim');
+
+
+      BlueLightTankSprite1.play("BlueLightTankAnim");
+      BlueLightTankSprite2.play("BlueLightTankAnim");
+      BlueLightTankSprite3.play("BlueLightTankAnim");
+
+
+      RedLightTankSprite1.play("RedLightTankAnim");
+      RedLightTankSprite2.play("RedLightTankAnim");
+      RedLightTankSprite3.play("RedLightTankAnim");
+
+
+      BlueBazoukaSprite1.play("BlueBasoukaAnim");
+      BlueBazoukaSprite2.play("BlueBasoukaAnim");
+      BlueBazoukaSprite3.play("BlueBasoukaAnim");
+      
+      RedBazoukaSprite1.play("RedBasoukaAnim");
+      RedBazoukaSprite2.play("RedBasoukaAnim");
+      RedBazoukaSprite3.play("RedBasoukaAnim");
     
       //**************************************************************************************************************************** */
     
@@ -1576,14 +1741,23 @@ function VerifyHpOfUnity(UnityToCheck)
 
 function VerifyTheProximityOfUnity(AttackUnity, DefenceUnity)
 {
-    if(AttackUnity.xposition != (DefenceUnity.xposition - 1) && AttackUnity.xposition != (DefenceUnity.xposition + 1))
+    if(AttackUnity.xposition == (DefenceUnity.xposition - 1 ) || AttackUnity.xposition == (DefenceUnity.xposition + 1))
     { 
-      
-        if(AttackUnity.yposition != (DefenceUnity.yposition -1) && AttackUnity.yposition != (DefenceUnity.yposition + 1))
+        if(AttackUnity.yposition != DefenceUnity.yposition)
           return false;
         else return true;
     }
-    else return true;
+    else 
+    {
+      if(AttackUnity.yposition == (DefenceUnity.yposition - 1 ) || AttackUnity.yposition == (DefenceUnity.yposition + 1))
+      {
+        if(AttackUnity.xposition != DefenceUnity.xposition)
+          return false;
+        else return true;
+      }
+      else return false;
+
+    }
 }
 
 function SearchSpriteRedTown(idTown)
@@ -1653,9 +1827,9 @@ function CalculateTheDefenceOfTheGround(ArmyToCalulate)
     if(Ground == FOREST)
     {
       return 1.5;
-    }else if(Ground == PLAIN)
+    }else if(Ground == MONTAIN)
     {
-      return 1;
+      return 2;
     }else
     {
       return 1
