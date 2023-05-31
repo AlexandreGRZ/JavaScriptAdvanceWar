@@ -122,8 +122,8 @@ var config = {
 
 var RedScore = 0;
 var BlueScore = 0;
-var highScore;
-getPB();
+var highScore = 0;
+
 
 
 //si TimeTurn == 0 Alors équipe des rouges joue, si c'est 1 c'est au tour des bleus
@@ -308,6 +308,8 @@ function InitialisationGame()
   scene;
 
   Mouving = false;
+
+  getPB()
 
 }
 
@@ -1042,7 +1044,7 @@ function unityCapture(idTown)
 
               Winner = "Red";
               RedScore += 2000;
-
+              console.log(highScore)
               if (RedScore > highScore) {
                 console.log("coucou2");
                 highScore = RedScore;
