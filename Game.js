@@ -260,17 +260,66 @@ function InitialisationGame()
   BlueTownVec = [];
   
   
-  NeutralTown1 = new Base(1, "Neutral", 20 , 10, 1, 8);
-  RedBase = new Base(2, "Red", 20, 10, 1, 5);
-  BlueBase = new Base(3, "Blue", 20, 10, 17, 4);
-  BlueTown1 = new Base(4, "Blue", 20, 10, 18, 5);
+  NeutralTown1 = new Base(1, "Neutral", 20 , 10, 5, 0);
+
+  NeutralTown2 = new Base(14, "Neutral", 20 , 10, 6, 2);
+
+  NeutralTown3 = new Base(15, "Neutral", 20 , 10, 7, 4);
+
+  NeutralTown4 = new Base(16, "Neutral", 20 , 10, 9, 5);
+
+  NeutralTown5 = new Base(17, "Neutral", 20 , 10, 12, 9);
+
+  NeutralTown6 = new Base(18, "Neutral", 20 , 10, 12, 4);
+
+
+
+
+
+
+
+  RedBase = new Base(2, "Red", 20, 10, 1, 8);
+  BlueBase = new Base(3, "Blue", 20, 10, 18, 1);
+  BlueTown1 = new Base(4, "Blue", 20, 10, 18, 2);
+  BlueTown2 = new Base(5, "Blue", 20, 10, 17, 1);
+  BlueTown3 = new Base(6, "Blue", 20, 10, 17, 3);
+  BlueTown4 = new Base(7, "Blue", 20, 10, 19, 5);
+  BlueTown5 = new Base(8, "Blue", 20, 10, 13, 2);
   
+  RedTown1 = new Base(9, "Red", 20, 10, 0, 8);
+  RedTown2 = new Base(10, "Red", 20, 10, 3, 9);
+  RedTown3 = new Base(11, "Red", 20, 10, 2, 6);
+  RedTown4 = new Base(12, "Red", 20, 10, 0, 4);
+  RedTown5 = new Base(13, "Red", 20, 10, 4, 5);
+  
+
+
+
   RedTownVec.push(RedBase);
+
+  RedTownVec.push(RedTown1);
+  RedTownVec.push(RedTown2);
+  RedTownVec.push(RedTown3);
+  RedTownVec.push(RedTown4);
+  RedTownVec.push(RedTown5);
+
   
   NeutralTownVec.push(NeutralTown1);
+
+  NeutralTownVec.push(NeutralTown2);
+  NeutralTownVec.push(NeutralTown3);
+  NeutralTownVec.push(NeutralTown4);
+  NeutralTownVec.push(NeutralTown5);
+  NeutralTownVec.push(NeutralTown6);
   
   BlueTownVec.push(BlueBase);
+ 
   BlueTownVec.push(BlueTown1);
+  BlueTownVec.push(BlueTown2);
+  BlueTownVec.push(BlueTown3);
+  BlueTownVec.push(BlueTown4);
+  BlueTownVec.push(BlueTown5);
+
   
 
   for (let element of RedTownVec) {
@@ -325,24 +374,34 @@ class Menu extends Phaser.Scene{
   preload() {
     this.load.image("playButton", "src/asset/Playbtn.jpg");
   
-    this.load.image("quitButton", "src/asset/ExitBtn.jpg");  
+    this.load.image("quitButton", "src/asset/ExitBtn.jpg"); 
+    
+    this.load.image("BackGroundImage", "src/asset/Advanced-wars.png")
   }
 
   create()
   {
-    var style = { font: "bold 32px Arial", fill: "#fff" };
-    var title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "Menu", style);
+
+    var BackGround = this.add.image(480, 270, "BackGroundImage");
+
+    
+
+    
+    var style = { font: "bold 32px Arial", fill: "#131313" };
+    var title = this.add.text(700, this.cameras.main.centerY - 100, "Menu", style);
     title.setOrigin(0.5);
 
-    var playButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, "playButton", this.startGame, this);
+    var playButton = this.add.sprite(700, this.cameras.main.centerY, "playButton", this.startGame, this);
     playButton.setOrigin(0.5);
     playButton.setInteractive();
     playButton.on("pointerup",  this.startGame, this);
     
-    var quitButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
+    var quitButton = this.add.sprite(700, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
     quitButton.setOrigin(0.5);
     quitButton.setInteractive();
     quitButton.on("pointerup", this.quitGame, this);
+
+   
   }
 
   update() {
@@ -369,28 +428,33 @@ class GameOver extends Phaser.Scene{
   preload() {
     this.load.image("playButton", "src/asset/Playbtn.jpg");
   
-    this.load.image("quitButton", "src/asset/ExitBtn.jpg");  
+    this.load.image("quitButton", "src/asset/ExitBtn.jpg"); 
+
+    this.load.image("BackGroundImage", "src/asset/Advanced-wars.png")
+  
   }
 
   create()
-  {
-    var style = { font: "bold 32px Arial", fill: "#fff" };
+  { 
+    var BackGround = this.add.image(480, 270, "BackGroundImage");
+    var style = { font: "bold 32px Arial", fill: "#131313" };
     if(Winner == "Red")
     {
-      var title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "RED WIN !", style);
+      var title = this.add.text(700, this.cameras.main.centerY - 100, "RED WIN !", style);
       title.setOrigin(0.5);
     }
     else
     {
-      var title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 100, "BLUE WIN !", style);
+      var title = this.add.text(700, this.cameras.main.centerY - 100, "BLUE WIN !", style);
       title.setOrigin(0.5);
+      
     }
-    var playButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, "playButton", this.startGame, this);
+    var playButton = this.add.sprite(700, this.cameras.main.centerY, "playButton", this.startGame, this);
     playButton.setOrigin(0.5);
     playButton.setInteractive();
     playButton.on("pointerup", this.startGame, this);
     
-    var quitButton = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
+    var quitButton = this.add.sprite(700, this.cameras.main.centerY + 100, "quitButton", this.quitGame, this);
     quitButton.setOrigin(0.5);
     quitButton.setInteractive();
     quitButton.on("pointerup",  this.quitGame, this);
@@ -510,34 +574,102 @@ class Game extends Phaser.Scene{
     
     
       //RED TOWN######################################
-      var RedBaseImage = this.add.image(24, 80, "RedBase");
+      var RedBaseImage = this.add.image(RedBase.xposition * 16 + 8, RedBase.yposition * 16  , "RedBase");
       var SpriteAddTab = new Sprite(RedBase.id, "Red", RedBaseImage);
-    
-    
       SpriteRedTown.push(SpriteAddTab);
     
-    
-      //Neutral TOWN######################################
-      var neutralTown1 = this.add.image(24, 135, "NeutralTown");
+      var redtown1 = this.add.image(RedTown1.xposition * 16 + 8, RedTown1.yposition * 16 + 7, "RedTown");
       
+      var redtown2 = this.add.image(RedTown2.xposition * 16 + 8, RedTown2.yposition * 16 + 7, "RedTown");
+      var redtown3 = this.add.image(RedTown3.xposition * 16 + 8, RedTown3.yposition * 16 + 7, "RedTown");
+      var redtown4 = this.add.image(RedTown4.xposition * 16 + 8, RedTown4.yposition * 16 + 7, "RedTown");
+      var redtown5 = this.add.image(RedTown5.xposition * 16 + 8, RedTown5.yposition * 16 + 7, "RedTown");
+      
+      var SpriteAddTab = new Sprite(RedTown1.id, "Red",redtown1 );
+      SpriteRedTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(RedTown2.id, "Red",redtown2 );
+      SpriteRedTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(RedTown3.id, "Red",redtown3 );
+      SpriteRedTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(RedTown4.id, "Red",redtown4 );
+      SpriteRedTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(RedTown5.id, "Red",redtown5 );
+      SpriteRedTown.push(SpriteAddTab);
+      
+
+
+      //Neutral TOWN######################################
+      var neutralTown1 = this.add.image(NeutralTown1.xposition * 16 + 8, NeutralTown1.yposition * 16 + 7, "NeutralTown");
+      
+      var neutralTown2 = this.add.image(NeutralTown2.xposition * 16 + 8, NeutralTown2.yposition * 16 + 7, "NeutralTown");
+      
+      var neutralTown3 = this.add.image(NeutralTown3.xposition * 16 + 8, NeutralTown3.yposition * 16 + 7, "NeutralTown");
+      
+      var neutralTown4 = this.add.image(NeutralTown4.xposition * 16 + 8, NeutralTown4.yposition * 16 + 7, "NeutralTown");
+      
+      var neutralTown5 = this.add.image(NeutralTown5.xposition * 16 + 8, NeutralTown5.yposition * 16 + 6, "NeutralTown");
+      
+      var neutralTown6 = this.add.image(NeutralTown6.xposition * 16 + 8, NeutralTown6.yposition * 16 + 6, "NeutralTown");
+      
+
+
       var SpriteAddTab = new Sprite(NeutralTown1.id, "Neutral", neutralTown1);
       SpriteNeutralTown.push(SpriteAddTab);
       
+      var SpriteAddTab = new Sprite(NeutralTown2.id, "Neutral", neutralTown2);
+      SpriteNeutralTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(NeutralTown3.id, "Neutral", neutralTown3);
+      SpriteNeutralTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(NeutralTown4.id, "Neutral", neutralTown4);
+      SpriteNeutralTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(NeutralTown5.id, "Neutral", neutralTown5);
+      SpriteNeutralTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(NeutralTown6.id, "Neutral", neutralTown6);
+      SpriteNeutralTown.push(SpriteAddTab);
+
       //BLUE TOWN######################################
       var BlueBase1 = this.add.image(BlueBase.xposition * 16 + 8, BlueBase.yposition * 16, "BlueBase");
       var blueTown1 = this.add.image(BlueTown1.xposition * 16 + 8, BlueTown1.yposition * 16 + 7, "BlueTown");
+      
+      var blueTown2 = this.add.image(BlueTown2.xposition * 16 + 8, BlueTown2.yposition * 16 + 7, "BlueTown");
+      
+      var blueTown3 = this.add.image(BlueTown3.xposition * 16 + 8, BlueTown3.yposition * 16 + 7, "BlueTown");
+    
+      var blueTown4 = this.add.image(BlueTown4.xposition * 16 + 8, BlueTown4.yposition * 16 + 7, "BlueTown");
+    
+      var blueTown5 = this.add.image(BlueTown5.xposition * 16 + 8, BlueTown5.yposition * 16 + 7, "BlueTown");
     
      
       var SpriteAddTab = new Sprite(BlueBase.id, "Blue", BlueBase1);
       SpriteBlueTown.push(SpriteAddTab);
+
+      
       var SpriteAddTab = new Sprite(BlueTown1.id, "Blue", blueTown1);
-       SpriteBlueTown.push(SpriteAddTab);
+      SpriteBlueTown.push(SpriteAddTab);
     
+      var SpriteAddTab = new Sprite(BlueTown2.id, "Blue", blueTown2);
+      SpriteBlueTown.push(SpriteAddTab);
+    
+      var SpriteAddTab = new Sprite(BlueTown3.id, "Blue", blueTown3);
+      SpriteBlueTown.push(SpriteAddTab);
       
-    
-    
-      
-    
+      var SpriteAddTab = new Sprite(BlueTown4.id, "Blue", blueTown4);
+      SpriteBlueTown.push(SpriteAddTab);
+
+      var SpriteAddTab = new Sprite(BlueTown5.id, "Blue", blueTown5);
+      SpriteBlueTown.push(SpriteAddTab);
+
+
+
+
       var InfoBulle = this.add.text(50, 50, {font : '16px Arial', fill: "#ffffff"});
       InfoBulle.setVisible(false);
       InfoBulle.setStyle({ fontSize: '9px', backgroundColor: '#202020' });
@@ -661,7 +793,6 @@ class Game extends Phaser.Scene{
       var SpriteAddTab = new Sprite(RedBazouka.id, "Red", RedBazoukaSprite);
       TabSprite.push(SpriteAddTab);
 
-    
       //**************************************************************************************************************************** */
     
       // Play Anim***************************************************************************************************
