@@ -1,72 +1,8 @@
-var player = {
-	username: null,
-};
+var usernamePlayer = null;
 
-window.addEventListener('message', (event) => {
-	if (event.data) player.username = event.data.username;
-
-  getPB();
+window.addEventListener("message", function (event) {
+  if (event.data) usernamePlayer = event.data.username;
 });
-
-function getPB() {
-	if (player.username != null) {
-		fetch(
-			'https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/getPB',
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					name: 'Advanced Wars',
-					username: player.username,
-				}),
-			}
-		)
-			.then((response) => {
-				if (response.ok) return response.json();
-			})
-			.then((data) => {
-				player.pb = data.score;
-        console.log(player.pb)
-			})
-			.catch((err) => {
-				console.log('Error while get pb request : ', err);
-			});
-	}
-}
-
-function updateScore() {
-	if (player.username == null || player.pb >= RedScore)
-		return;
-
-	fetch(
-		"https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/updateScore",
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name: 'Advanced Wars',
-				username: player.username,
-				score: RedScore,
-			}),
-		}
-	)
-		.then((response) => {
-			if (response.ok) return response.json();
-		})
-		.then((data) => {
-			
-		})
-		.catch((err) => {
-			console.log('Error while update pb request : ', err);
-		});
-}
-
-
-
 
 class MainInfentery{
 
@@ -186,6 +122,8 @@ var config = {
 
 var RedScore = 0;
 var BlueScore = 0;
+var highScore;
+getPB();
 
 
 //si TimeTurn == 0 Alors équipe des rouges joue, si c'est 1 c'est au tour des bleus
@@ -1555,7 +1493,11 @@ function LookIfTheGameIsEnd()
   if(BlueTeamIsOver == false)
   {
     Winner = "Red";
-    updateScore();
+
+    if (RedScore > highscore) {
+      highscore = RedScore;
+      updateScore();
+    }
     game.scene.start("GameOver");
   }
     
@@ -1577,4 +1519,71 @@ function CalculateTheDefenceOfTheGround(ArmyToCalulate)
     {
       return 1
     }
+}
+
+function getPB() {
+  if (usernamePlayer != null) {
+    fetch(
+      "https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/getPB",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: "Advanced Wars",
+          username: usernamePlayer,
+        }),
+      }
+    )
+      .then((response) => {
+        if (response.ok) return response.json();
+      })
+      .then((data) => {
+        // console.log(data);
+        // console.log(highscore + "avant");
+        highscore = data.score;
+        //  console.log(highscore + "apres");
+      })
+      .catch((err) => {
+        //  console.log("Error while get pb request : ", err);
+      });
+  } else {
+    //  console.log("pas d'utilisateur connecte");
+  }
+}
+
+function updateScore() {
+  // console.log("dans updatescore");
+  if (usernamePlayer != null) {
+    fetch(
+      "https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/updateScore",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: "Advanced Wars",
+          username: usernamePlayer,
+          score: RedScore, // premier score = propriete de l'objeta  envoye , 2 eme = score du jeu
+        }),
+      }
+    )
+      .then((response) => {
+        if (response.ok) return response.json();
+        // else console.log("erreur dans response de update");
+      })
+      .then((data) => {
+        //if (data.update == true) console.log("update reussis");
+        //else {
+        //  console.log("error on update");
+        // }
+      })
+      .catch((err) => {
+        console.log("Error while get update score : ", err);
+      });
+  } else {
+    // console.log("pas d'utilisateur connecte");
+  }
 }
