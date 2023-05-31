@@ -1493,8 +1493,9 @@ function LookIfTheGameIsEnd()
   if(BlueTeamIsOver == false)
   {
     Winner = "Red";
-
+    console.log("coucou");
     if (RedScore > highscore) {
+      console.log("coucou2");
       highscore = RedScore;
       updateScore();
     }
@@ -1552,7 +1553,7 @@ function getPB() {
 }
 
 function updateScore() {
- 
+  console.log("update")
   if (usernamePlayer != null) {
     fetch(
       "https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/updateScore",
