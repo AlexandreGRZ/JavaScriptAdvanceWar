@@ -4,9 +4,6 @@ var player = {
 
 window.addEventListener('message', (event) => {
 	if (event.data) player.username = event.data.username;
-  
-    getPB();
-    console.log(player.pb)
 });
 
 function getPB() {
@@ -37,12 +34,12 @@ function getPB() {
 	}
 }
 
-function updatePB() {
+function updateScore() {
 	if (player.username == null || player.pb >= RedScore)
 		return;
 
 	fetch(
-		'https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/updateScore',
+		"https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/updateScore",
 		{
 			method: 'POST',
 			headers: {
@@ -59,7 +56,7 @@ function updatePB() {
 			if (response.ok) return response.json();
 		})
 		.then((data) => {
-			player.pb = RedScore;
+			
 		})
 		.catch((err) => {
 			console.log('Error while update pb request : ', err);
@@ -372,6 +369,7 @@ function InitialisationGame()
 
   Mouving = false;
 
+  getpb();
 
 }
 
@@ -1557,7 +1555,7 @@ function LookIfTheGameIsEnd()
   if(BlueTeamIsOver == false)
   {
     Winner = "Red";
-    updatePB();
+    updateScore();
     game.scene.start("GameOver");
   }
     
