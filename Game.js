@@ -1042,6 +1042,13 @@ function unityCapture(idTown)
 
               Winner = "Red";
               RedScore += 2000;
+              
+              if (RedScore > highscore) {
+                console.log("coucou2");
+                highscore = RedScore;
+                updateScore();
+              }
+              
               game.scene.start("GameOver");
               game.scene.remove('Game');
             }
