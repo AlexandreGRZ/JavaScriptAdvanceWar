@@ -1,10 +1,78 @@
+var player = {
+	username: null,
+};
+
+window.addEventListener('message', (event) => {
+	if (event.data) player.username = event.data.username;
+
+	getPB();
+});
+
+function getPB() {
+	if (player.username != null) {
+		fetch(
+			'https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/getPB',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name: 'Advanced Wars',
+					username: player.username,
+				}),
+			}
+		)
+			.then((response) => {
+				if (response.ok) return response.json();
+			})
+			.then((data) => {
+				player.pb = data.score;
+			})
+			.catch((err) => {
+				console.log('Error while get pb request : ', err);
+			});
+	}
+}
+
+function updatePB() {
+	if (player.username == null || player.pb >= RedScore)
+		return;
+
+	fetch(
+		'https://europe-west1.gcp.data.mongodb-api.com/app/application-0-ptcis/endpoint/updateScore',
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name: 'Advanced Wars',
+				username: player.username,
+				score: RedScore,
+			}),
+		}
+	)
+		.then((response) => {
+			if (response.ok) return response.json();
+		})
+		.then((data) => {
+			player.pb = RedScore;
+		})
+		.catch((err) => {
+			console.log('Error while update pb request : ', err);
+		});
+}
+
+
+
+
 class MainInfentery{
 
   
 
-  constructor(id, type, hp, attack, defence, captureCapacity,mouvement , team, multiplicateur,mutiplicateurAgainstArmor , MultiplicatorAgainstInfetry ,xposition, yposition)
+  constructor(id, type, hp, attack, defence, captureCapacity,mouvement , team, multiplicateur,mutiplicateurAgainstArmor , MultiplicatorAgainstInfetry ,xposition, yposition, enableToPlay)
   {   
-      this.deplacement = 5;
       this.multiplicateur = multiplicateur
       this.id = id;
       this.type = type;
@@ -18,6 +86,7 @@ class MainInfentery{
       this.xposition = xposition;
       this.yposition = yposition;
       this.team = team;
+      this.enableToPlay = enableToPlay;
   }
 
   MoveInfentery(newxposition, newyposition)
@@ -40,7 +109,17 @@ class MainInfentery{
 
   reloadDeplacement()
   {
-    this.mouvement = this.deplacement;
+    if(this.type == "MainInfetry" )
+    {
+      this.mouvement = 5;
+    }else if(this.type =="Bazouka" )
+    {
+      this.mouvement = 4;
+    }else
+    {
+      this.mouvement = 6;
+    }
+    this.enableToPlay = true;
   }
 
   isBlinde()
@@ -101,13 +180,20 @@ class Sprite{
 var config = {
   type: Phaser.AUTO,
   width: 960,
-  height: 510,
+  height: 540,
 };
 
-
+var RedScore = 0;
+var BlueScore = 0;
 
 
 //si TimeTurn == 0 Alors équipe des rouges joue, si c'est 1 c'est au tour des bleus
+var FOREST = 68;
+var PLAIN = 1;
+
+
+
+
 
 var timeTurn = 0;
 
@@ -117,14 +203,24 @@ var keyN;
 var keyB;
 var xcursorposition = 0;
 var ycursorposition = 0;
+
+var ycursorpositionBlue = 0;
+var xcursorpositionBlue = 0;
+
+var xcursorpositionRed = 0;
+var ycursorpositionRed = 0;
+
+var SpriteCursor = null;
 var Zoom = 3;
 var game = new Phaser.Game(config);
 var neutraltown1;
 var redtown1;
 var InfobulleAttack;
+var infobulleUnitySelected;
 var Winner = "Red";
 
 var cursorPositionTab = [];
+var MapTilesIndice =  [];
 
 
 //Sprite Unity ***************************************************************************************************************
@@ -197,14 +293,14 @@ var Mouving = false;
 function InitialisationGame()
 {
   TabSprite = [];
-  maininfentery = new MainInfentery(1,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 0, 0);
-  BlueMainInfentery1 = new MainInfentery(2,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 5, 0);
+  maininfentery = new MainInfentery(1,"MainInfetry", 100, 20, 10, 10, 5,"Red" ,0.5, 0.1, 1, 0, 0, true);
+  BlueMainInfentery1 = new MainInfentery(2,"MainInfetry", 100, 20, 10, 10, 5,"Blue",0.5, 0.1, 1, 5, 0, true);
 
-  RedLightTank = new MainInfentery(3,"TankInfentry", 100, 35, 40, 0, 6,"Red",0.5, 1, 1.2, 6, 3);
-  BlueLightTank = new MainInfentery(4,"TankInfentry", 100, 35, 40, 0, 6,"Blue",0.5, 1, 1.2, 7, 6);
+  RedLightTank = new MainInfentery(3,"TankInfentry", 100, 35, 40, 0, 6,"Red",0.5, 1, 1.2, 6, 3, true);
+  BlueLightTank = new MainInfentery(4,"TankInfentry", 100, 35, 40, 0, 6,"Blue",0.5, 1, 1.2, 7, 6, true);
 
-  RedBazouka = new MainInfentery(5,"Bazouka", 100, 30, 10, 0, 6,"Red",0.5, 1, 1, 2, 3);
-  BlueBazouka = new MainInfentery(6,"Bazouka", 100, 30, 10, 0, 6,"Blue",0.5, 1, 1, 3, 7);
+  RedBazouka = new MainInfentery(5,"Bazouka", 100, 30, 10, 0, 4,"Red",0.5, 1, 1, 2, 3, true);
+  BlueBazouka = new MainInfentery(6,"Bazouka", 100, 30, 10, 0, 4,"Blue",0.5, 1, 1, 3, 7, true);
 
   InfenteryTab = [];
 
@@ -450,9 +546,23 @@ class Game extends Phaser.Scene{
       var tiles = map.addTilesetImage("MainAssetForMap", "tiles");
     
       var layer = map.createLayer("Map", tiles);
+
+      var tilesGroud = layer.layer.data;
+
+      console.log()
+      for (var y = 0; y < 10; y++) {
+        MapTilesIndice[y] = [];
+        for (var x = 0; x < 20; x++) {
+          var tileIndex = tilesGroud[y][x].index;
+          MapTilesIndice[y][x] = tileIndex
+        }
+      }
+      
+      console.log(MapTilesIndice[0][10])
     
       var cursor = this.add.image(16, 16, "cursor");
       cursor.setDepth(3);
+      SpriteCursor = cursor;
     
      
     
@@ -513,6 +623,12 @@ class Game extends Phaser.Scene{
       InfobulleAttack.setText("HP ATTACK = " + "    " + "HP DEFENCE = ");
       InfobulleAttack.setPosition(70, 159);
 
+      infobulleUnitySelected = this.add.text(50, 50,{font : '16px Arial', fill: "#ffffff"} )
+      infobulleUnitySelected.setVisible(true);
+      infobulleUnitySelected.setStyle({ fontSize: '9px'});
+
+      infobulleUnitySelected.setText("TYPE = " + "   " + "HP = " + "   " + "MOUVEMENT = ")
+      infobulleUnitySelected.setPosition(1, 168);
     
       //ZOOM ###################################################################
       this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -667,13 +783,19 @@ class Game extends Phaser.Scene{
               if(armyPositionTab[ycursorposition][xcursorposition] != 0)
               {
                   ArmySelected = getArmySelected(armyPositionTab[ycursorposition][xcursorposition]);
+                  infobulleUnitySelected.setText("TYPE = " + ArmySelected.type + "   " + "HP = " + ArmySelected.hp + "   " + "MOUVEMENT = " + ArmySelected.mouvement)
                   console.log(ArmySelected);
               }
             }else if(event.key === "n")
             {
               if(ArmySelected != null)
-              {
-                deplacementInfentery(ArmySelected, getSprite(ArmySelected));
+              { 
+                if(ArmySelected.enableToPlay)
+                {
+                  deplacementInfentery(ArmySelected, getSprite(ArmySelected));
+                  infobulleUnitySelected.setText("TYPE = " + ArmySelected.type + "   " + "HP = " + ArmySelected.hp + "   " + "MOUVEMENT = " + ArmySelected.mouvement)
+                }
+                
               }
             }else if(event.key === "v")
             {
@@ -689,8 +811,9 @@ class Game extends Phaser.Scene{
             }else if(event.key === "c")
             {
               if(ArmySelected != null)
-              {
-                  unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
+              { 
+                if(ArmySelected.enableToPlay)
+                    unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
               }
             }else if(event.key === "t")
             {   
@@ -724,8 +847,13 @@ class Game extends Phaser.Scene{
                   if(check)
                   {
                       if(armyPositionTab[ycursorposition][xcursorposition] != 0)
-                      {
+                      {   
+                        if(ArmySelected.enableToPlay)
+                        {
                           UnityAttack(ArmySelected, defenceArmy);
+                          infobulleUnitySelected.setText("TYPE = " + ArmySelected.type + "   " + "HP = " + ArmySelected.hp + "   " + "MOUVEMENT = " + ArmySelected.mouvement)
+                        }
+                           
                       }
                   }
                   else
@@ -969,6 +1097,7 @@ function unityCapture(idTown)
               RedTownVec.push(RedBase2);
 
               Winner = "Red";
+              RedScore += 2000;
               game.scene.start("GameOver");
               game.scene.remove('Game');
             }
@@ -994,7 +1123,7 @@ function unityCapture(idTown)
   
                 RedTownVec.push(RedTown2);
 
-                
+                RedScore += 500;
   
               }
               else
@@ -1017,6 +1146,8 @@ function unityCapture(idTown)
                 NeutralTownVec.splice(NeutralTownVec.indexOf(TownCaptured), 1);
   
                 RedTownVec.push(RedTown2);
+
+                RedScore += 200;
   
               }
 
@@ -1061,6 +1192,7 @@ function unityCapture(idTown)
               BlueTownVec.push(BlueBase2);
 
               Winner = "Blue";
+              BlueScore += 2000;
               game.scene.start("GameOver");
               game.scene.remove('Game');
             }
@@ -1087,6 +1219,8 @@ function unityCapture(idTown)
                 RedTownVec.splice(RedTownVec.indexOf(TownCaptured), 1);
   
                 BlueTownVec.push(BlueTown2);
+
+                BlueScore += 500;
   
               }
               else
@@ -1109,6 +1243,8 @@ function unityCapture(idTown)
                 NeutralTownVec.splice(NeutralTownVec.indexOf(TownCaptured), 1);
   
                 BlueTownVec.push(BlueTown2);
+
+                BlueScore += 200;
   
               }
 
@@ -1124,11 +1260,9 @@ function unityCapture(idTown)
         else
         {
           console.log("capture");
-        }
+        }    
     }
-
-
-   
+    ArmySelected.enableToPlay = false;
 }
 
 function getTownCapturedForRed(id)
@@ -1179,10 +1313,40 @@ function ChangeTurn()
 {   
   console.log("ChnageTurn");
     ReloadMouvement();
+    infobulleUnitySelected.setText("TYPE = " + "   " + "HP = " + "   " + "MOUVEMENT = ")
     if(timeTurn == 0)
+    {
+      setNewPositionForCursor(xcursorpositionBlue, ycursorpositionBlue);
+      xcursorpositionRed = xcursorposition;
+      ycursorpositionRed = ycursorposition;
+
+      xcursorposition = xcursorpositionBlue;
+      ycursorposition = ycursorpositionBlue;
+     
       timeTurn = 1;
+    }
+    
     else 
+    {
+      setNewPositionForCursor(xcursorpositionRed, ycursorpositionRed);
+      xcursorpositionBlue = xcursorposition;
+      ycursorpositionBlue = ycursorposition;
+
+      xcursorposition = xcursorpositionRed;
+      ycursorposition = ycursorpositionRed;
+
+      
       timeTurn = 0;
+    }
+     
+}
+
+function setNewPositionForCursor( xcursorpositionNewValue, ycursorpositionNewValue)
+{
+    SpriteCursor.setPosition(xcursorpositionNewValue * 16 + 16, ycursorpositionNewValue * 16 + 16);
+    cursorPositionTab[ycursorposition][xcursorposition] = 0;
+    cursorPositionTab[ycursorpositionNewValue][xcursorpositionNewValue] = 1;
+    console.log(cursorPositionTab)
 }
 
 function ReloadMouvement()
@@ -1203,8 +1367,9 @@ function UnityAttack(AttackUnity, defenceUnity)
 
     var HpDefenserToDesplay;
     var HpAttackerToDesplay;
+    var defenceOfGround = CalculateTheDefenceOfTheGround(defenceUnity);
     var puissanceDesAttaquant = AttackUnity.attack + (AttackUnity.multiplicateur * AttackUnity.hp);
-    var degat = (puissanceDesAttaquant * 0.5 - defenceUnity.defence * 0.1) + 10;
+    var degat = (puissanceDesAttaquant * 0.5 - defenceUnity.defence * 0.1) / defenceOfGround + 10;
     
     if(defenceUnity.isBlinde())
     { 
@@ -1225,7 +1390,8 @@ function UnityAttack(AttackUnity, defenceUnity)
     { 
       HpDefenserToDesplay = defenceUnity.hp;
       var puissanceDesDefenseur = defenceUnity.attack + (defenceUnity.multiplicateur * defenceUnity.hp);
-      var degat = (puissanceDesDefenseur * 0.2 - AttackUnity.defence * 0.1) + 10;
+      defenceOfGround = CalculateTheDefenceOfTheGround(AttackUnity);
+      var degat = (puissanceDesDefenseur * 0.2 - AttackUnity.defence * 0.1) / defenceOfGround + 10;
       
       if(AttackUnity.isBlinde())
       {   
@@ -1245,6 +1411,25 @@ function UnityAttack(AttackUnity, defenceUnity)
       if(VerifyHpOfUnity(AttackUnity))
       {
         HpAttackerToDesplay = "DESTROYED";
+        if(AttackUnity.type == "MainInfetry" )
+        {
+          if(AttackUnity.team = "Red")
+              RedScore += 100;
+          else
+              BlueScore += 100;
+        }else if(AttackUnity.type =="Bazouka" )
+        {
+          if(AttackUnity.team = "Red")
+              RedScore += 150;
+          else
+              BlueScore += 150;
+        }else
+        {
+          if(AttackUnity.team = "Red")
+              RedScore += 300;
+          else
+              BlueScore += 300;
+        }
       }
       else
       {
@@ -1254,10 +1439,32 @@ function UnityAttack(AttackUnity, defenceUnity)
     else
     {
         HpDefenserToDesplay = "DESTROYED";
+        if(defenceUnity.type == "MainInfetry" )
+        {
+          if(defenceUnity.team = "Blue")
+              RedScore += 100;
+          else
+              BlueScore += 100;
+        }else if(defenceUnity.type =="Bazouka" )
+        {
+          if(defenceUnity.team = "Blue")
+              RedScore += 150;
+          else
+              BlueScore += 150;
+        }else
+        {
+          if(defenceUnity.team = "Blue")
+              RedScore += 300;
+          else
+              BlueScore += 300;
+        }
         HpAttackerToDesplay = AttackUnity.hp;
     }
+    console.log("BLUE =" + BlueScore + "RED = " + RedScore)
 
     InfobulleAttack.setText("HP ATTACK = " + HpAttackerToDesplay + "  " + "HP DEFENCE = " + HpDefenserToDesplay);
+
+    AttackUnity.enableToPlay = false;
 
 }
 
@@ -1342,7 +1549,26 @@ function LookIfTheGameIsEnd()
   if(BlueTeamIsOver == false)
   {
     Winner = "Red";
+    updatePB();
     game.scene.start("GameOver");
   }
     
+}
+
+function CalculateTheDefenceOfTheGround(ArmyToCalulate)
+{   
+    var x = ArmyToCalulate.xposition
+    var y = ArmyToCalulate.yposition
+    var Ground = MapTilesIndice[y][x];
+    console.log(Ground + " " + ArmyToCalulate.yposition + " " + ArmyToCalulate.xposition );
+    if(Ground == FOREST)
+    {
+      return 1.5;
+    }else if(Ground == PLAIN)
+    {
+      return 1;
+    }else
+    {
+      return 1
+    }
 }
