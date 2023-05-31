@@ -1042,10 +1042,10 @@ function unityCapture(idTown)
 
               Winner = "Red";
               RedScore += 2000;
-              
-              if (RedScore > highscore) {
+
+              if (RedScore > highScore) {
                 console.log("coucou2");
-                highscore = RedScore;
+                highScore = RedScore;
                 updateScore();
               }
               
@@ -1501,9 +1501,9 @@ function LookIfTheGameIsEnd()
   {
     Winner = "Red";
     console.log("coucou");
-    if (RedScore > highscore) {
+    if (RedScore > highScore) {
       console.log("coucou2");
-      highscore = RedScore;
+      highScore = RedScore;
       updateScore();
     }
     game.scene.start("GameOver");
@@ -1548,7 +1548,7 @@ function getPB() {
         if (response.ok) return response.json();
       })
       .then((data) => {
-        highscore = data.score;
+        highScore = data.score;
         
       })
       .catch((err) => {
