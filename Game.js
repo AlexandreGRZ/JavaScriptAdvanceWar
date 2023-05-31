@@ -1052,6 +1052,8 @@ class Game extends Phaser.Scene{
               { 
                 if(ArmySelected.enableToPlay)
                     unityCapture(TownTabLocalisation[ycursorposition][xcursorposition]);
+
+                
               }
             }else if(event.key === "t")
             {   
@@ -1316,7 +1318,7 @@ function unityCapture(idTown)
         if(captureEnd)
         {   
             console.log("Captured");
-            
+            infobulleUnitySelected.setText("Town as Been Captured !")
             if(idTown == 3)
             {
               var SpriteSearch = SearchSpriteBlueTown(idTown);
@@ -1408,6 +1410,7 @@ function unityCapture(idTown)
         else
         {
           console.log("capture");
+          infobulleUnitySelected.setText("The city is being captured ! HP = " + TownCaptured.hp)
         }
     }
     else
@@ -1415,10 +1418,11 @@ function unityCapture(idTown)
         var TownCaptured = getTownCapturedForBlue(idTown);
 
         captureEnd = TownCaptured.capture(ArmySelected.captureCapacity);
-    
+      
         if(captureEnd)
         {   
             console.log("Captured");
+            infobulleUnitySelected.setText("Town as Been Captured !")
             if(idTown == 2)
             {
               var SpriteSearch = SearchSpriteRedTown(idTown);
@@ -1509,6 +1513,7 @@ function unityCapture(idTown)
         else
         {
           console.log("capture");
+          infobulleUnitySelected.setText("The city is being captured ! HP = " + TownCaptured.hp)
         }    
     }
     ArmySelected.enableToPlay = false;
