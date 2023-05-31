@@ -5,7 +5,7 @@ var player = {
 window.addEventListener('message', (event) => {
 	if (event.data) player.username = event.data.username;
 
-	getPB();
+	  getPB();
 });
 
 function getPB() {
@@ -1069,7 +1069,11 @@ function unityCapture(idTown)
     {
         var TownCaptured = getTownCapturedForRed(idTown);
 
-        captureEnd = TownCaptured.capture(ArmySelected.captureCapacity);
+        if(ArmySelected.captureCapacity != 0)
+        {
+          captureEnd = TownCaptured.capture(Math.floor(ArmySelected.hp / 10));
+        }
+       
     
         if(captureEnd)
         {   
