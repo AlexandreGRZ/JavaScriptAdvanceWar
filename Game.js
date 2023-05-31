@@ -539,6 +539,7 @@ class Game extends Phaser.Scene{
     {
 
       InitialisationGame();
+      console.log(player.username);
       scene = this;
 
 
